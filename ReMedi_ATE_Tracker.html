@@ -126,7 +126,7 @@ const DATES=Object.keys(D).sort();
 let state={date:DATES[0],campus:"North Campus",open:null,search:"",view:"location",shift:"all",modal:null,showSwap:false};
 
 // Google Sheets sync
-let SHEET_URL="";
+let SHEET_URL="https://script.google.com/macros/s/AKfycbyoo5E7PfswmGdiiv-SbaE0FFTm0hzyFYy8R8XAWDHBLKh4PsXPvNOR3gr5Z1PjKzuJ/exec";
 let statuses={};  // key -> {status, replacedBy, note}
 let syncStatus="none";
 
@@ -307,12 +307,7 @@ function render(){
         <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">On Shift</div></div>
       </div></div>
     </div>
-    ${!SHEET_URL?`<div class="setup-banner">
-      <h3>Connect Google Sheet for Live Sync</h3>
-      <p>Paste your Apps Script URL to sync statuses and swaps across all devices in real time.</p>
-      <input id="sheetUrl" placeholder="https://script.google.com/macros/s/..." />
-      <button onclick="saveSheetUrl(document.getElementById('sheetUrl').value)">Connect</button>
-    </div>`:""}
+    ${``}
     <div class="date-scroll">${DATES.map(d=>{const s=shortD(d);return`<button class="date-btn${d===state.date?" active":""}" onclick="setState({date:'${d}'})"><div class="day">${s.day}</div><div class="num">${s.num}</div></button>`}).join("")}</div>
     <div class="campus-row">${campuses.map(c=>`<button class="campus-btn${c===state.campus?" active":""}${!availCampuses.includes(c)?" disabled":""}" onclick="setState({campus:'${c}'})" ${!availCampuses.includes(c)?'style="opacity:0.3;pointer-events:none"':""}>${c.replace(" Campus","")}</button>`).join("")}</div>
     <div class="controls-row">
