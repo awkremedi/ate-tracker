@@ -139,32 +139,57 @@ function setSt(date,campus,unit,shift,person,st,replacedBy,note){
   if(SHEET_URL)pushStatus(date,campus,unit,shift,person,st,replacedBy,note);
 }
 
+function saveLocal(){try{localStorage.setItem("ate_statuses",JSON.stringify(statuses));}catch(e){}}
+function loadLocal(){try{const s=localStorage.getItem("ate_statuses");if(s){statuses=JSON.parse(s);}}catch(e){}}
+loadLocal();
+
+let jsonpId=0;
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+    const cbName="__cb"+(jsonpId++);
+    const timeout=setTimeout(()=>{cleanup();reject(new Error("timeout"));},10000);
+    function cleanup(){delete window[cbName];const s=document.getElementById(cbName);if(s)s.remove();clearTimeout(timeout);}
+    window[cbName]=function(data){cleanup();resolve(data);};
+    const s=document.createElement("script");
+    s.id=cbName;
+    s.src=url+(url.includes("?")?"&":"?")+"callback="+cbName;
+    s.onerror=function(){cleanup();reject(new Error("script error"));};
+    document.body.appendChild(s);
+  });
+}
+
 function pushStatus(date,campus,unit,shift,person,st,replacedBy,note){
+  saveLocal();
   syncStatus="loading";render();
   const url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(campus)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"");
-  fetch(url,{redirect:"follow"}).then(r=>{syncStatus="ok";render();}).catch(()=>{
-    fetch(url,{mode:"no-cors"}).then(()=>{syncStatus="ok";render();}).catch(()=>{syncStatus="error";render();});
-  });
+  jsonp(url).then(()=>{syncStatus="ok";render();}).catch(()=>{syncStatus="error";render();});
 }
 
 function pullStatuses(){
   if(!SHEET_URL)return;
   syncStatus="loading";render();
-  fetch(SHEET_URL+"?action=get&t="+Date.now()).then(r=>r.json()).then(rows=>{
-    statuses={};
+  jsonp(SHEET_URL+"?action=get&t="+Date.now()).then(rows=>{
+    if(!Array.isArray(rows)){loadLocal();syncStatus="error";render();return;}
+    const fresh={};
     rows.forEach(r=>{
       if(r.status){
         const k=stKey(r.date,r.campus,r.unit,r.shift,r.person);
-        statuses[k]={status:r.status,replacedBy:r.replacedBy||"",note:r.note||""};
+        fresh[k]={status:r.status,replacedBy:r.replacedBy||"",note:r.note||""};
       }
     });
+    statuses=fresh;
+    saveLocal();
     syncStatus="ok";render();
-  }).catch(()=>{syncStatus="error";render();});
+  }).catch(()=>{
+    loadLocal();
+    syncStatus="error";render();
+  });
 }
 
 function enc(s){return encodeURIComponent(s||"");}
 function saveSheetUrl(url){SHEET_URL=url.trim();try{localStorage.setItem("ate_sheet_url",SHEET_URL);}catch(e){}pullStatuses();}
-try{const saved=localStorage.getItem("ate_sheet_url");if(saved){SHEET_URL=saved;setTimeout(pullStatuses,500);}}catch(e){}
+try{const saved=localStorage.getItem("ate_sheet_url");if(saved)SHEET_URL=saved;}catch(e){}
+setTimeout(pullStatuses,500);
 
 function h(n){return(n.charCodeAt(0)*37+(n.length>1?n.charCodeAt(1):0)*13)%360}
 function fmtDate(s){const d=new Date(s+"T12:00:00"),days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return days[d.getDay()]+", "+mo[d.getMonth()]+" "+d.getDate()}
