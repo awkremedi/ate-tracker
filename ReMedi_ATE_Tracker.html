@@ -161,6 +161,8 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .filter-item-name { font-size: 13px; font-weight: 500; flex: 1; }
 .filter-item-loc { font-size: 10px; color: var(--subtle); }
 .filter-close { padding: 14px; border-radius: 12px; border: none; background: rgba(255,255,255,0.06); color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; font-family: inherit; }
+.filter-section { margin-bottom: 16px; }
+.filter-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 0 6px; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 8px; }
 
 .stat-tap { cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: background 0.15s; }
 .stat-tap:active { background: rgba(255,255,255,0.1); }
@@ -401,16 +403,35 @@ function render(){
     const fp=getFilteredPeople(state.filterStatus);
     const labels={present:"Present",missing:"Missing / No Show",left:"Left Early",swapped:"Swapped"};
     const colors={present:"#22c55e",missing:"#ef4444",left:"#fbbf24",swapped:"#a855f7"};
+    // Group by campus then day/night
+    const groups={};
+    fp.forEach(r=>{
+      const campShort=r.campus.replace(" Campus","");
+      const dn=r.shift.toLowerCase().includes("day")?"Day Shift":"Night Shift";
+      const key=campShort+"||"+dn;
+      if(!groups[key])groups[key]={campus:campShort,dn,people:[]};
+      groups[key].people.push(r);
+    });
+    const groupOrder=["North||Day Shift","North||Night Shift","Mid||Day Shift","Mid||Night Shift","South||Day Shift","South||Night Shift"];
+    const sortedGroups=groupOrder.filter(k=>groups[k]).map(k=>groups[k]);
+    // Add any groups not in the predefined order
+    Object.keys(groups).forEach(k=>{if(!groupOrder.includes(k))sortedGroups.push(groups[k]);});
+    
     filterHtml=`<div class="filter-overlay" onclick="if(event.target===this)closeFilter()">
       <div class="filter-modal">
         <div class="filter-title" style="color:${colors[state.filterStatus]}">${labels[state.filterStatus]} (${fp.length})</div>
-        <div class="filter-subtitle">${fmtDate(state.date)} / All Campuses</div>
+        <div class="filter-subtitle">${fmtDate(state.date)}</div>
         ${fp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one with this status</div>':""}
-        ${fp.map(r=>{
-          const hue=h(r.name);
-          return`<div class="filter-item" onclick="closeFilter();setState({campus:'${r.campus}'});openModal('${state.date}','${r.campus}','${r.unit.replace(/'/g,"\\'")}','${r.shift.replace(/'/g,"\\'")}','${r.person.replace(/'/g,"\\'")}')">
+        ${sortedGroups.map(g=>{
+          const dnColor=g.dn==="Day Shift"?"#F26522":"#818cf8";
+          return`<div class="filter-section">
+            <div class="filter-section-title"><span style="color:${dnColor}">${g.campus} / ${g.dn}</span> <span style="color:#64748b;font-weight:400">(${g.people.length})</span></div>
+            ${g.people.map(r=>{
+              const hue=h(r.name);
+              return`<div class="filter-item" onclick="closeFilter();setState({campus:'${r.campus}'});openModal('${state.date}','${r.campus}','${r.unit.replace(/'/g,"\\'")}','${r.shift.replace(/'/g,"\\'")}','${r.person.replace(/'/g,"\\'")}')">
             <div class="person-avatar" style="background:hsl(${hue},45%,35%)">${r.name.charAt(0)}${r.name.includes(" ")?r.name.split(" ").pop().charAt(0):""}</div>
-            <div style="flex:1;min-width:0"><div class="filter-item-name">${r.name}</div><div class="filter-item-loc">${r.campus.replace(" Campus","")} / ${r.unit} / ${r.shift}</div>${r.phone?`<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} ${r.phone}</div>`:""}</div>
+            <div style="flex:1;min-width:0"><div class="filter-item-name">${r.name}</div><div class="filter-item-loc">${r.unit}</div>${r.phone?`<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} ${r.phone}</div>`:""}</div>
+          </div>`}).join("")}
           </div>`}).join("")}
         <button class="filter-close" onclick="closeFilter()">Close</button>
       </div>
