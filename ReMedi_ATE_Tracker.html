@@ -40,7 +40,8 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
 .brand-sub { font-size: 11px; font-weight: 600; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; }
 .brand-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #fff; }
-.stat-box { background: var(--orange-dim); border-radius: 12px; padding: 8px 14px; border: 1px solid var(--orange-border); text-align: center; }
+.stat-box { background: var(--orange-dim); border-radius: 12px; padding: 8px 14px; border: 1px solid var(--orange-border); text-align: center; cursor: pointer; }
+.stat-box:active { background: rgba(242,101,34,0.25); }
 .stat-num { font-size: 22px; font-weight: 700; color: var(--orange); }
 .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
@@ -176,7 +177,21 @@ const PHONES={"Tori Nance":"6786342673","Lacoria Provo":"682-222-4330","George F
 
 const ICONS={"Emergency Dept.":"\u{1F6A8}","Radiology":"\u{1F4E1}","Day Surg":"\u{1F52A}","Surgery: OR":"\u{1F3E5}","Surgery: PACU":"\u{1F489}","Surgery: PAT":"\u{1F4CB}","Surgery: Operating Rooms":"\u{1F3E5}","Surgery: Post Op/PACU":"\u{1F489}","Surgery: Day":"\u{1F52A}","Surgery Outpatient: Infusion":"\u{1F489}","Surgery/Anesthesia: Day":"\u{1F52A}","Surgery/Anesthesia: Operating Rooms":"\u{1F3E5}","Surgery/Anesthesia: Post Op/PACU":"\u{1F489}","GI Lab/Endo":"\u{1F52C}","GI LAB/Endo":"\u{1F52C}","GI LAB North":"\u{1F52C}","Respiratory Therapy/EKG":"\u{1FAC1}","Respiratory Therapy":"\u{1FAC1}","Case Management":"\u{1F4C2}","Care Management":"\u{1F4C2}","Social Work":"\u{1F91D}","Social Worker":"\u{1F91D}","PT/OT/ST":"\u{1F3C3}","Inpatient PT/OT/ST":"\u{1F3C3}","Outpatient PT/OT/ST":"\u{1F3C3}","ST":"\u{1F3C3}","Nutrition/DM Education":"\u{1F34E}","BHU/2NW":"\u{1F9E0}","Labor and Delivery (L&D)":"\u{1F476}","Nursery":"\u{1F37C}","Acute Care 1":"\u{1FA7A}","Acute Care 2":"\u{1FA7A}","Acute Care 3":"\u{1FA7A}","ICU":"\u{2764}\u{FE0F}\u{200D}\u{1FA79}","Employee Health":"\u{1F3E2}","Cancer Center":"\u{1F397}\u{FE0F}","Wound Center":"\u{1FA79}","Mammogram":"\u{1F4F7}","Imaging":"\u{1F4F7}","Imaging Main":"\u{1F4F7}","Diagnostic Imaging: EKG/Echo/NM/CL":"\u{1F4F7}","LAB":"\u{1F9EA}","Dialysis":"\u{1F9BE}","Sleep Center":"\u{1F634}","Behavioral Health":"\u{1F9E0}"};
 const DATES=Object.keys(D).sort();
-let state={date:DATES[0],campus:"North Campus",open:null,search:"",view:"location",shift:"all",modal:null,showSwap:false,filterStatus:null};
+// Auto-detect today's date
+function getDefaultDate(){
+  const today=new Date();
+  const ts=today.getFullYear()+"-"+("0"+(today.getMonth()+1)).slice(-2)+"-"+("0"+today.getDate()).slice(-2);
+  if(DATES.includes(ts))return ts;
+  // Find closest date
+  let closest=DATES[0];
+  let minDiff=Infinity;
+  DATES.forEach(d=>{
+    const diff=Math.abs(new Date(d+"T12:00:00")-today);
+    if(diff<minDiff){minDiff=diff;closest=d;}
+  });
+  return closest;
+}
+let state={date:getDefaultDate(),campus:"North Campus",open:null,search:"",view:"location",shift:"all",modal:null,showSwap:false,filterStatus:null,filterOnShift:false};
 
 let SHEET_URL="https://script.google.com/macros/s/AKfycbwX2A8W2znSKdlgvkHL23xuA89y0r8S0HPqAVqWWqbsnH6eH7R3P-un1cOvmOIp_LDx/exec";
 let statuses={};
@@ -213,10 +228,31 @@ function jsonp(url){
   });
 }
 
+// Manager identification
+let managerName="";
+try{managerName=localStorage.getItem("ate_manager_name")||"";}catch(e){}
+function getManager(){
+  if(managerName)return managerName;
+  const name=prompt("Enter your name (this identifies who made changes):");
+  if(name&&name.trim()){
+    managerName=name.trim();
+    try{localStorage.setItem("ate_manager_name",managerName);}catch(e){}
+  }
+  return managerName;
+}
+function changeManager(){
+  const name=prompt("Enter your name:",managerName);
+  if(name&&name.trim()){
+    managerName=name.trim();
+    try{localStorage.setItem("ate_manager_name",managerName);}catch(e){}
+    render();
+  }
+}
+
 function pushStatus(date,campus,unit,shift,person,st,replacedBy,note){
   saveLocal();
   syncStatus="loading";render();
-  const url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(campus)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"");
+  const url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(campus)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"")+"&manager="+enc(managerName);
   jsonp(url).then(()=>{syncStatus="ok";render();}).catch(()=>{syncStatus="error";render();});
 }
 
@@ -258,9 +294,26 @@ function openModal(date,campus,unit,shift,person){
 function closeModal(){state.modal=null;state.showSwap=false;render();}
 function closeFilter(){state.filterStatus=null;render();}
 function showFilter(st){state.filterStatus=st;render();}
+function showOnShift(){state.filterOnShift=true;render();}
+function closeOnShift(){state.filterOnShift=false;render();}
+
+function getAllOnShift(){
+  const results=[];
+  const dd=D[state.date]||{};
+  const cd=dd[state.campus]||{};
+  Object.entries(cd).forEach(([unit,udata])=>{
+    Object.entries(udata.shifts||{}).forEach(([sn,sd])=>{
+      sd.people.forEach(p=>{
+        results.push({name:cleanName(p),campus:state.campus,unit,shift:sn,time:sd.time,person:p,phone:getPhone(p),isProvider:isProv(p)});
+      });
+    });
+  });
+  return results;
+}
 
 function setStatusModal(st){
   if(!state.modal)return;
+  if(!getManager())return;
   const m=state.modal;
   setSt(m.date,m.campus,m.unit,m.shift,m.person,st,"","");
   state.modal=null;state.showSwap=false;render();
@@ -268,6 +321,7 @@ function setStatusModal(st){
 
 function doSwap(permanent){
   if(!state.modal)return;
+  if(!getManager())return;
   const m=state.modal;
   const inp=document.getElementById("swapName");
   const repName=(inp?inp.value:"").trim();
@@ -385,6 +439,7 @@ function render(){
 
   const syncDot=syncStatus==="ok"?'<span class="sync-dot sync-ok"></span>':syncStatus==="error"?'<span class="sync-dot sync-err"></span>':syncStatus==="loading"?'<span class="sync-dot sync-load"></span>':"";
   const syncLabel=SHEET_URL?(syncDot+'<span style="font-size:9px;color:#64748b">Live</span>'):'<span style="font-size:9px;color:#fbbf24">Offline</span>';
+  const managerLabel=managerName?`<span style="font-size:9px;color:#94a3b8;cursor:pointer" onclick="changeManager()">\u{1F464} ${managerName}</span>`:`<span style="font-size:9px;color:#fbbf24;cursor:pointer" onclick="getManager();render()">Tap to set name</span>`;
 
   // Build status summary with tappable counters
   let statusSummary="";
@@ -471,12 +526,12 @@ function render(){
     </div>`;
   }
 
-  document.getElementById("app").innerHTML=`
+  let mainHtml=`
     <div class="header">
-      <div class="header-row"><div><div class="brand-sub">ReMedi ATE Support</div><div class="brand-title">Schedule Tracker</div><div style="margin-top:2px">${syncLabel} ${SHEET_URL?'<span style="font-size:9px;color:#475569;cursor:pointer" onclick="pullStatuses()"> refresh</span>':''}</div></div>
+      <div class="header-row"><div><div class="brand-sub">ReMedi ATE Support</div><div class="brand-title">Schedule Tracker</div><div style="margin-top:2px">${syncLabel} ${SHEET_URL?'<span style="font-size:9px;color:#475569;cursor:pointer" onclick="pullStatuses()"> refresh</span>':''}</div><div style="margin-top:1px">${managerLabel}</div></div>
       <div style="display:flex;gap:8px;align-items:center">
         ${statusSummary}
-        <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">On Shift</div></div>
+        <div class="stat-box" onclick="showOnShift()"><div class="stat-num">${total}</div><div class="stat-label">On Shift</div></div>
       </div></div>
     </div>
     <div class="date-scroll">${DATES.map(d=>{const s=shortD(d);return`<button class="date-btn${d===state.date?" active":""}" onclick="setState({date:'${d}'})"><div class="day">${s.day}</div><div class="num">${s.num}</div></button>`}).join("")}</div>
@@ -511,9 +566,46 @@ function render(){
           const stBadge=r.status?`<span class="status-badge ${r.status}" style="margin-top:4px;display:inline-block">${r.status==="left"?"Left Early":r.status==="swapped"?"Swapped":r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>`:"";
           return`<div class="result-card${r.isProvider?" provider":""}" onclick="openModal('${r.date}','${r.campus}','${r.unit.replace(/'/g,"\\'")}','${r.shift.replace(/'/g,"\\'")}','${r.person.replace(/'/g,"\\'")}')"><div class="result-top"><div class="result-name">${r.name}${r.isProvider?' <span style="color:#10b981;font-size:11px">(Provider)</span>':""}</div><div class="result-date">${fmtDate(r.date)}</div></div><div class="result-unit">${r.unit} / ${r.shift} / ${r.time}</div><div class="result-campus">${r.campus} ${r.phone?'<span style="color:#0EA5E9;font-size:10px">\u{1F4F1} '+r.phone+'</span>':""} ${stBadge} ${r.status==="swapped"&&r.replacedBy?'<span style="color:#a855f7;font-size:10px"> &rarr; '+r.replacedBy+'</span>':""}</div></div>`}).join("")}`}
       `}
-    </div>
-    ${filterHtml}
-    ${modalHtml}`;
+    </div>`;
+
+    // On-shift popup
+    let onShiftHtml="";
+    if(state.filterOnShift){
+      const osp=getAllOnShift();
+      const osGroups={};
+      osp.forEach(r=>{
+        const dn=r.shift.toLowerCase().includes("day")?"Day Shift":"Night Shift";
+        if(!osGroups[dn])osGroups[dn]=[];
+        osGroups[dn].push(r);
+      });
+      const osOrder=["Day Shift","Night Shift"];
+      onShiftHtml=`<div class="filter-overlay" onclick="if(event.target===this)closeOnShift()">
+        <div class="filter-modal">
+          <div class="filter-title" style="color:#F26522">On Shift (${osp.length})</div>
+          <div class="filter-subtitle">${fmtDate(state.date)} / ${state.campus}</div>
+          ${osp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one on shift</div>':""}
+          ${osOrder.filter(dn=>osGroups[dn]).map(dn=>{
+            const dnColor=dn==="Day Shift"?"#F26522":"#818cf8";
+            const ppl=osGroups[dn];
+            return`<div class="filter-section">
+              <div class="filter-section-title"><span style="color:${dnColor}">${dn}</span> <span style="color:#64748b;font-weight:400">(${ppl.length})</span></div>
+              ${ppl.map(r=>{
+                const hue=r.isProvider?160:h(r.name);
+                const rec=getSt(state.date,r.campus,r.unit,r.shift,r.person);
+                const st=rec?rec.status:null;
+                const stBadge=st?`<span class="status-badge ${st}" style="flex-shrink:0">${st==="left"?"Left Early":st==="swapped"?"Swapped":st.charAt(0).toUpperCase()+st.slice(1)}</span>`:"";
+                return`<div class="filter-item" onclick="closeOnShift();openModal('${state.date}','${r.campus}','${r.unit.replace(/'/g,"\\'")}','${r.shift.replace(/'/g,"\\'")}','${r.person.replace(/'/g,"\\'")}')">
+              <div class="person-avatar" style="background:hsl(${hue},45%,35%)">${r.name.charAt(0)}${r.name.includes(" ")?r.name.split(" ").pop().charAt(0):""}</div>
+              <div style="flex:1;min-width:0"><div class="filter-item-name">${r.name}${r.isProvider?' <span style="color:#10b981;font-size:10px">(Provider)</span>':""}</div><div class="filter-item-loc">${r.unit}</div>${r.phone?`<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} ${r.phone}</div>`:""}</div>
+              ${stBadge}
+            </div>`}).join("")}
+            </div>`}).join("")}
+          <button class="filter-close" onclick="closeOnShift()">Close</button>
+        </div>
+      </div>`;
+    }
+
+  document.getElementById("app").innerHTML=mainHtml+onShiftHtml+filterHtml+modalHtml;
   if(state.view==="search"){const i=document.querySelector(".search-input");if(i&&document.activeElement!==i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}
 }
 function setState(p){Object.assign(state,p);render();}
