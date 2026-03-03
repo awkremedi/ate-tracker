@@ -193,7 +193,7 @@ function getDefaultDate(){
 }
 let state={date:getDefaultDate(),campus:"North Campus",open:null,search:"",view:"location",shift:"all",modal:null,showSwap:false,filterStatus:null,filterOnShift:false};
 
-let SHEET_URL="https://script.google.com/macros/s/AKfycbwiAQuHnfVOUKghrFvIJfvfUrLdTQlgrgl9qbTnc4U9YRSWRUZ8cd4VHm-k4elMSwbk/exec";
+let SHEET_URL="https://script.google.com/macros/s/AKfycbw4ydIrQxt3xrhCQM5lQ04ZPrEz3htEjeTxJLkwaegC1pAtbEwFPbuJFxOOtWNdSYZI/exec";
 let statuses={};
 let syncStatus="none";
 
@@ -201,15 +201,15 @@ function stKey(date,campus,unit,shift,person){return date+"||"+campus+"||"+unit+
 function getSt(date,campus,unit,shift,person){return statuses[stKey(date,campus,unit,shift,person)]||null;}
 function setSt(date,campus,unit,shift,person,st,replacedBy,note){
   const k=stKey(date,campus,unit,shift,person);
-  if(!st){delete statuses[k];}else{
-    const existing=statuses[k];
-    let checkins=1;
-    if(existing&&existing.status==="present"&&st==="present"){
-      checkins=(existing.checkins||1)+1;
-    }
-    statuses[k]={status:st,replacedBy:replacedBy||"",note:note||"",checkins:st==="present"?checkins:0};
+  if(!st){delete statuses[k];if(SHEET_URL)pushStatus(date,campus,unit,shift,person,"",replacedBy,note,0);return;}
+  const existing=statuses[k];
+  let checkins=1;
+  if(existing&&existing.status==="present"&&st==="present"){
+    checkins=(existing.checkins||1)+1;
   }
-  if(SHEET_URL)pushStatus(date,campus,unit,shift,person,st,replacedBy,note,statuses[stKey(date,campus,unit,shift,person)]?statuses[stKey(date,campus,unit,shift,person)].checkins:0);
+  if(st!=="present")checkins=0;
+  statuses[k]={status:st,replacedBy:replacedBy||"",note:note||"",checkins:checkins};
+  if(SHEET_URL)pushStatus(date,campus,unit,shift,person,st,replacedBy,note,checkins);
 }
 function getPhone(person){
   const clean=person.replace(" | Provider","").split(" | ")[0].trim();
