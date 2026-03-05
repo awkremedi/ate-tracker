@@ -35,7 +35,6 @@
 body { background: var(--navy); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; min-height: 100vh; min-height: 100dvh; overflow-x: hidden; }
 body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 50% 0%, rgba(14,165,233,0.08) 0%, transparent 60%); pointer-events: none; z-index: 0; }
 .app { position: relative; z-index: 1; padding-bottom: 40px; }
-
 .header { padding: 20px 20px 12px; background: linear-gradient(180deg, rgba(14,165,233,0.12) 0%, transparent 100%); padding-top: max(20px, env(safe-area-inset-top)); }
 .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
 .brand-sub { font-size: 11px; font-weight: 600; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; }
@@ -49,7 +48,6 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .sync-err { background: var(--red); }
 .sync-load { background: var(--yellow); animation: pulse 1s infinite; }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
 .date-scroll { display: flex; gap: 6px; padding: 0 20px 14px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .date-scroll::-webkit-scrollbar { display: none; }
 .date-btn { flex-shrink: 0; width: 44px; padding: 8px 0; border-radius: 12px; background: var(--hover-bg); border: 1px solid rgba(255,255,255,0.06); color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: all 0.15s ease; }
@@ -58,24 +56,20 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .date-btn .num { font-size: 16px; font-weight: 500; }
 .date-btn.active .day { opacity: 1; }
 .date-btn.active .num { font-weight: 700; }
-
 .campus-row { padding: 0 20px 12px; display: flex; gap: 8px; }
 .campus-btn { flex: 1; padding: 10px 0; border-radius: 10px; background: var(--hover-bg); border: 1px solid rgba(255,255,255,0.06); color: var(--subtle); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s ease; text-align: center; }
 .campus-btn.active { background: var(--teal-dim); border-color: var(--teal-border); color: var(--teal); }
-
 .controls-row { padding: 0 20px 14px; display: flex; gap: 8px; align-items: center; }
 .toggle-group { display: flex; background: var(--hover-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; }
 .toggle-btn { padding: 7px 14px; background: transparent; border: none; color: var(--subtle); font-size: 12px; font-weight: 600; cursor: pointer; }
 .toggle-btn.active { background: var(--teal-dim); color: var(--teal); }
 .shift-group { margin-left: auto; }
 .shift-group .toggle-btn { padding: 7px 10px; }
-
 .content { padding: 0 20px; }
 .content-label { font-size: 12px; color: var(--subtle); margin-bottom: 12px; font-weight: 500; }
 .empty-state { text-align: center; padding: 40px; color: var(--subtle); background: var(--card-bg); border-radius: 16px; border: 1px solid var(--card-border); }
 .empty-icon { font-size: 36px; margin-bottom: 12px; }
 .empty-title { font-size: 14px; font-weight: 500; }
-
 .unit-list { display: flex; flex-direction: column; gap: 8px; }
 .unit-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; overflow: hidden; }
 .unit-card.open { background: rgba(14,165,233,0.04); border-color: rgba(14,165,233,0.12); }
@@ -87,14 +81,12 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .unit-arrow { font-size: 14px; color: var(--subtle); transition: transform 0.2s; }
 .unit-card.open .unit-arrow { transform: rotate(90deg); }
 .unit-body { padding: 0 16px 14px; }
-
 .shift-section { margin-top: 8px; }
 .shift-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .shift-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 .shift-label.day { color: var(--orange); }
 .shift-label.night { color: #818cf8; }
 .shift-time { font-size: 10px; color: var(--subtle); background: var(--hover-bg); padding: 2px 8px; border-radius: 6px; }
-
 .person-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; margin-bottom: 4px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); cursor: pointer; position: relative; }
 .person-row.provider { border-color: rgba(16,185,129,0.2); background: rgba(16,185,129,0.05); }
 .person-row.st-present { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.08); }
@@ -116,7 +108,6 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .status-badge.left { background: rgba(251,191,36,0.2); color: var(--yellow); }
 .status-badge.removed { background: rgba(100,116,139,0.2); color: var(--subtle); }
 .status-badge.swapped { background: rgba(168,85,247,0.2); color: var(--purple); }
-
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
 .modal { background: var(--navy-light); border-radius: 20px 20px 0 0; padding: 24px 20px 40px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; }
 .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #fff; }
@@ -137,7 +128,6 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .swap-form .swap-btns { display: flex; gap: 8px; }
 .swap-form button { flex: 1; padding: 12px; border-radius: 8px; background: var(--teal); border: none; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
 .swap-form button.swap-perm { background: var(--red); }
-
 .search-wrap { position: relative; margin-bottom: 16px; }
 .search-input { width: 100%; padding: 14px 16px 14px 42px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: var(--text); font-size: 15px; outline: none; font-family: inherit; }
 .search-input:focus { border-color: var(--teal-border); }
@@ -150,8 +140,6 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .result-date { font-size: 10px; color: var(--orange); background: var(--orange-dim); padding: 3px 8px; border-radius: 6px; font-weight: 600; flex-shrink: 0; }
 .result-unit { font-size: 11px; color: var(--subtle); margin-top: 4px; }
 .result-campus { font-size: 10px; color: var(--subtle); margin-top: 2px; }
-
-/* Status filter popup */
 .filter-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
 .filter-modal { background: var(--navy-light); border-radius: 20px 20px 0 0; padding: 20px 20px 40px; width: 100%; max-width: 480px; max-height: 70vh; overflow-y: auto; }
 .filter-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
@@ -164,7 +152,6 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .filter-close { padding: 14px; border-radius: 12px; border: none; background: rgba(255,255,255,0.06); color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; font-family: inherit; }
 .filter-section { margin-bottom: 16px; }
 .filter-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 0 6px; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 8px; }
-
 .stat-tap { cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: background 0.15s; }
 .stat-tap:active { background: rgba(255,255,255,0.1); }
 </style>
@@ -177,12 +164,11 @@ const PHONES={"Syndi Callis":"520-450-1799","Valerie Matthews":"540-729-1345","I
 
 const ICONS={"Emergency Dept.":"\u{1F6A8}","Radiology":"\u{1F4E1}","Day Surg":"\u{1F52A}","Surgery: OR":"\u{1F3E5}","Surgery: PACU":"\u{1F489}","Surgery: PAT":"\u{1F4CB}","Surgery: Operating Rooms":"\u{1F3E5}","Surgery: Post Op/PACU":"\u{1F489}","Surgery: Day":"\u{1F52A}","Surgery Outpatient: Infusion":"\u{1F489}","Surgery/Anesthesia: Day":"\u{1F52A}","Surgery/Anesthesia: Operating Rooms":"\u{1F3E5}","Surgery/Anesthesia: Post Op/PACU":"\u{1F489}","GI Lab/Endo":"\u{1F52C}","GI LAB/Endo":"\u{1F52C}","GI LAB North":"\u{1F52C}","Respiratory Therapy/EKG":"\u{1FAC1}","Respiratory Therapy":"\u{1FAC1}","Case Management":"\u{1F4C2}","Care Management":"\u{1F4C2}","Social Work":"\u{1F91D}","Social Worker":"\u{1F91D}","PT/OT/ST":"\u{1F3C3}","Inpatient PT/OT/ST":"\u{1F3C3}","Outpatient PT/OT/ST":"\u{1F3C3}","ST":"\u{1F3C3}","Nutrition/DM Education":"\u{1F34E}","BHU/2NW":"\u{1F9E0}","Labor and Delivery (L&D)":"\u{1F476}","Nursery":"\u{1F37C}","Acute Care 1":"\u{1FA7A}","Acute Care 2":"\u{1FA7A}","Acute Care 3":"\u{1FA7A}","ICU":"\u{2764}\u{FE0F}\u{200D}\u{1FA79}","Employee Health":"\u{1F3E2}","Cancer Center":"\u{1F397}\u{FE0F}","Wound Center":"\u{1FA79}","Mammogram":"\u{1F4F7}","Imaging":"\u{1F4F7}","Imaging Main":"\u{1F4F7}","Diagnostic Imaging: EKG/Echo/NM/CL":"\u{1F4F7}","LAB":"\u{1F9EA}","Dialysis":"\u{1F9BE}","Sleep Center":"\u{1F634}","Behavioral Health":"\u{1F9E0}"};
 const DATES=Object.keys(D).sort();
-// Auto-detect today's date
+
 function getDefaultDate(){
   const today=new Date();
   const ts=today.getFullYear()+"-"+("0"+(today.getMonth()+1)).slice(-2)+"-"+("0"+today.getDate()).slice(-2);
   if(DATES.includes(ts))return ts;
-  // Find closest date
   let closest=DATES[0];
   let minDiff=Infinity;
   DATES.forEach(d=>{
@@ -191,6 +177,7 @@ function getDefaultDate(){
   });
   return closest;
 }
+
 let state={date:getDefaultDate(),campus:"North Campus",open:null,search:"",view:"location",shift:"all",modal:null,showSwap:false,filterStatus:null,filterOnShift:false};
 
 let SHEET_URL="https://script.google.com/macros/s/AKfycbw4ydIrQxt3xrhCQM5lQ04ZPrEz3htEjeTxJLkwaegC1pAtbEwFPbuJFxOOtWNdSYZI/exec";
@@ -199,52 +186,6 @@ let syncStatus="none";
 
 function stKey(date,campus,unit,shift,person){return date+"||"+campus+"||"+unit+"||"+shift+"||"+person;}
 function getSt(date,campus,unit,shift,person){return statuses[stKey(date,campus,unit,shift,person)]||null;}
-function nowTime(){
-  const d=new Date();
-  let h=d.getHours(),m=d.getMinutes(),ap="a";
-  if(h>=12){ap="p";if(h>12)h-=12;}
-  if(h===0)h=12;
-  return h+":"+("0"+m).slice(-2)+ap;
-}
-function setSt(date,campus,unit,shift,person,st,replacedBy,note){
-  const k=stKey(date,campus,unit,shift,person);
-  if(!st){delete statuses[k];if(SHEET_URL)pushStatus(date,campus,unit,shift,person,"",replacedBy,note,"");return;}
-  const existing=statuses[k];
-  let checkins="";
-  if(st==="present"){
-    const ts=nowTime()+" ("+managerName+")";
-    if(existing&&existing.status==="present"&&existing.checkins&&String(existing.checkins).includes(":")){
-      checkins=existing.checkins+", "+ts;
-    } else {
-      checkins=ts;
-    }
-  }
-  statuses[k]={status:st,replacedBy:replacedBy||"",note:note||"",checkins:checkins};
-  if(SHEET_URL)pushStatus(date,campus,unit,shift,person,st,replacedBy,note,checkins);
-}
-function getPhone(person){
-  const clean=person.replace(" | Provider","").split(" | ")[0].trim();
-  return PHONES[clean]||null;
-}
-
-function saveLocal(){try{localStorage.setItem("ate_statuses",JSON.stringify(statuses));}catch(e){}}
-function loadLocal(){try{const s=localStorage.getItem("ate_statuses");if(s){statuses=JSON.parse(s);}}catch(e){}}
-loadLocal();
-
-let jsonpId=0;
-function jsonp(url){
-  return new Promise((resolve,reject)=>{
-    const cbName="__cb"+(jsonpId++);
-    const timeout=setTimeout(()=>{cleanup();reject(new Error("timeout"));},10000);
-    function cleanup(){delete window[cbName];const s=document.getElementById(cbName);if(s)s.remove();clearTimeout(timeout);}
-    window[cbName]=function(data){cleanup();resolve(data);};
-    const s=document.createElement("script");
-    s.id=cbName;
-    s.src=url+(url.includes("?")?"&":"?")+"callback="+cbName;
-    s.onerror=function(){cleanup();reject(new Error("script error"));};
-    document.body.appendChild(s);
-  });
-}
 
 // Manager identification
 let managerName="";
@@ -267,29 +208,78 @@ function changeManager(){
   }
 }
 
+function nowTime(){
+  var d=new Date();
+  var h=d.getHours(),m=d.getMinutes(),ap="a";
+  if(h>=12){ap="p";if(h>12)h-=12;}
+  if(h===0)h=12;
+  return h+":"+("0"+m).slice(-2)+ap;
+}
+
+function setSt(date,campus,unit,shift,person,st,replacedBy,note){
+  var k=stKey(date,campus,unit,shift,person);
+  if(!st){delete statuses[k];if(SHEET_URL)pushStatus(date,campus,unit,shift,person,"",replacedBy,note,"");return;}
+  var existing=statuses[k];
+  var checkins="";
+  if(st==="present"){
+    var ts=nowTime()+" ("+managerName+")";
+    if(existing&&existing.status==="present"&&existing.checkins&&String(existing.checkins).indexOf(":")>=0){
+      checkins=existing.checkins+", "+ts;
+    } else {
+      checkins=ts;
+    }
+  }
+  statuses[k]={status:st,replacedBy:replacedBy||"",note:note||"",checkins:checkins};
+  if(SHEET_URL)pushStatus(date,campus,unit,shift,person,st,replacedBy,note,checkins);
+}
+
+function getPhone(person){
+  var clean=person.replace(" | Provider","").split(" | ")[0].trim();
+  return PHONES[clean]||null;
+}
+
+function saveLocal(){try{localStorage.setItem("ate_statuses",JSON.stringify(statuses));}catch(e){}}
+function loadLocal(){try{var s=localStorage.getItem("ate_statuses");if(s){statuses=JSON.parse(s);}}catch(e){}}
+loadLocal();
+
+var jsonpId=0;
+function jsonp(url){
+  return new Promise(function(resolve,reject){
+    var cbName="__cb"+(jsonpId++);
+    var timeout=setTimeout(function(){cleanup();reject(new Error("timeout"));},10000);
+    function cleanup(){delete window[cbName];var s=document.getElementById(cbName);if(s)s.remove();clearTimeout(timeout);}
+    window[cbName]=function(data){cleanup();resolve(data);};
+    var s=document.createElement("script");
+    s.id=cbName;
+    s.src=url+(url.indexOf("?")>=0?"&":"?")+"callback="+cbName;
+    s.onerror=function(){cleanup();reject(new Error("script error"));};
+    document.body.appendChild(s);
+  });
+}
+
 function pushStatus(date,campus,unit,shift,person,st,replacedBy,note,checkins){
   saveLocal();
   syncStatus="loading";render();
-  const url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(campus)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"")+"&manager="+enc(managerName)+"&checkins="+enc(checkins||"");
-  jsonp(url).then(()=>{syncStatus="ok";render();}).catch(()=>{syncStatus="error";render();});
+  var url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(campus)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"")+"&manager="+enc(managerName)+"&checkins="+enc(checkins||"");
+  jsonp(url).then(function(){syncStatus="ok";render();}).catch(function(){syncStatus="error";render();});
 }
 
 function pullStatuses(){
   if(!SHEET_URL)return;
   syncStatus="loading";render();
-  jsonp(SHEET_URL+"?action=get&t="+Date.now()).then(rows=>{
+  jsonp(SHEET_URL+"?action=get&t="+Date.now()).then(function(rows){
     if(!Array.isArray(rows)){loadLocal();syncStatus="error";render();return;}
-    const fresh={};
-    rows.forEach(r=>{
+    var fresh={};
+    rows.forEach(function(r){
       if(r.status){
-        const k=stKey(r.date,r.campus,r.unit,r.shift,r.person);
+        var k=stKey(r.date,r.campus,r.unit,r.shift,r.person);
         fresh[k]={status:r.status,replacedBy:r.replacedBy||"",note:r.note||"",checkins:r.checkins||""};
       }
     });
     statuses=fresh;
     saveLocal();
     syncStatus="ok";render();
-  }).catch(()=>{
+  }).catch(function(){
     loadLocal();
     syncStatus="error";render();
   });
@@ -299,14 +289,14 @@ function enc(s){return encodeURIComponent(s||"");}
 setTimeout(pullStatuses,500);
 
 function h(n){return(n.charCodeAt(0)*37+(n.length>1?n.charCodeAt(1):0)*13)%360}
-function fmtDate(s){const d=new Date(s+"T12:00:00"),days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return days[d.getDay()]+", "+mo[d.getMonth()]+" "+d.getDate()}
-function shortD(s){const d=new Date(s+"T12:00:00");return{day:["S","M","T","W","T","F","S"][d.getDay()],num:d.getDate()}}
-function isD(s){return s.toLowerCase().includes("day")}
-function isProv(p){return p.includes("| Provider")}
+function fmtDate(s){var d=new Date(s+"T12:00:00"),days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return days[d.getDay()]+", "+mo[d.getMonth()]+" "+d.getDate()}
+function shortD(s){var d=new Date(s+"T12:00:00");return{day:["S","M","T","W","T","F","S"][d.getDay()],num:d.getDate()}}
+function isD(s){return s.toLowerCase().indexOf("day")>=0}
+function isProv(p){return p.indexOf("| Provider")>=0}
 function cleanName(p){return p.replace(" | Provider","").split(" | ")[0].trim();}
 
 function openModal(date,campus,unit,shift,person){
-  state.modal={date,campus,unit,shift,person,name:cleanName(person)};
+  state.modal={date:date,campus:campus,unit:unit,shift:shift,person:person,name:cleanName(person)};
   state.showSwap=false;render();
 }
 function closeModal(){state.modal=null;state.showSwap=false;render();}
@@ -316,13 +306,13 @@ function showOnShift(){state.filterOnShift=true;render();}
 function closeOnShift(){state.filterOnShift=false;render();}
 
 function getAllOnShift(){
-  const results=[];
-  const dd=D[state.date]||{};
-  const cd=dd[state.campus]||{};
-  Object.entries(cd).forEach(([unit,udata])=>{
-    Object.entries(udata.shifts||{}).forEach(([sn,sd])=>{
-      sd.people.forEach(p=>{
-        results.push({name:cleanName(p),campus:state.campus,unit,shift:sn,time:sd.time,person:p,phone:getPhone(p),isProvider:isProv(p)});
+  var results=[];
+  var dd=D[state.date]||{};
+  var cd=dd[state.campus]||{};
+  Object.entries(cd).forEach(function(e){var unit=e[0],udata=e[1];
+    Object.entries(udata.shifts||{}).forEach(function(e2){var sn=e2[0],sd=e2[1];
+      sd.people.forEach(function(p){
+        results.push({name:cleanName(p),campus:state.campus,unit:unit,shift:sn,time:sd.time,person:p,phone:getPhone(p),isProvider:isProv(p)});
       });
     });
   });
@@ -332,7 +322,7 @@ function getAllOnShift(){
 function setStatusModal(st){
   if(!state.modal)return;
   if(!getManager())return;
-  const m=state.modal;
+  var m=state.modal;
   setSt(m.date,m.campus,m.unit,m.shift,m.person,st,"","");
   state.modal=null;state.showSwap=false;render();
 }
@@ -340,20 +330,20 @@ function setStatusModal(st){
 function doSwap(permanent){
   if(!state.modal)return;
   if(!getManager())return;
-  const m=state.modal;
-  const inp=document.getElementById("swapName");
-  const repName=(inp?inp.value:"").trim();
+  var m=state.modal;
+  var inp=document.getElementById("swapName");
+  var repName=(inp?inp.value:"").trim();
   if(!repName){alert("Enter a replacement name");return;}
   if(permanent){
-    const startIdx=DATES.indexOf(m.date);
+    var startIdx=DATES.indexOf(m.date);
     if(startIdx>=0){
-      for(let i=startIdx;i<DATES.length;i++){
-        const dd=D[DATES[i]];
+      for(var i=startIdx;i<DATES.length;i++){
+        var dd=D[DATES[i]];
         if(dd&&dd[m.campus]&&dd[m.campus][m.unit]){
-          const u=dd[m.campus][m.unit];
+          var u=dd[m.campus][m.unit];
           if(u.shifts&&u.shifts[m.shift]){
-            const ppl=u.shifts[m.shift].people;
-            if(ppl.includes(m.person)){
+            var ppl=u.shifts[m.shift].people;
+            if(ppl.indexOf(m.person)>=0){
               setSt(DATES[i],m.campus,m.unit,m.shift,m.person,"swapped",repName,"permanent");
             }
           }
@@ -367,16 +357,15 @@ function doSwap(permanent){
 }
 
 function getFilteredPeople(statusFilter){
-  const results=[];
-  const dd=D[state.date]||{};
-  // Search across ALL campuses for this date
-  Object.entries(dd).forEach(([camp,cUnits])=>{
-    Object.entries(cUnits).forEach(([unit,udata])=>{
-      Object.entries(udata.shifts||{}).forEach(([sn,sd])=>{
-        sd.people.forEach(p=>{
-          const rec=getSt(state.date,camp,unit,sn,p);
+  var results=[];
+  var dd=D[state.date]||{};
+  Object.entries(dd).forEach(function(e){var camp=e[0],cUnits=e[1];
+    Object.entries(cUnits).forEach(function(e2){var unit=e2[0],udata=e2[1];
+      Object.entries(udata.shifts||{}).forEach(function(e3){var sn=e3[0],sd=e3[1];
+        sd.people.forEach(function(p){
+          var rec=getSt(state.date,camp,unit,sn,p);
           if(rec&&rec.status===statusFilter){
-            results.push({name:cleanName(p),campus:camp,unit,shift:sn,time:sd.time,person:p,phone:getPhone(p),replacedBy:rec.replacedBy||""});
+            results.push({name:cleanName(p),campus:camp,unit:unit,shift:sn,time:sd.time,person:p,phone:getPhone(p),replacedBy:rec.replacedBy||""});
           }
         });
       });
@@ -385,59 +374,70 @@ function getFilteredPeople(statusFilter){
   return results;
 }
 
+function makeBadge(st,rec){
+  if(!st)return "";
+  var label="";
+  if(st==="present"){
+    var ci=rec&&rec.checkins?String(rec.checkins):"";
+    if(ci&&ci.indexOf(":")>=0){
+      var parts=ci.split(", ");
+      var last=parts[parts.length-1];
+      label="Present "+last;
+    } else {
+      label="Present";
+    }
+  } else if(st==="left"){label="Left Early";}
+  else if(st==="swapped"){label="Swapped";}
+  else if(st==="missing"){label="Missing";}
+  else if(st==="removed"){label="Removed";}
+  else {label=st.charAt(0).toUpperCase()+st.slice(1);}
+  return '<span class="status-badge '+st+'">'+label+'</span>';
+}
+
 function renderPerson(p,date,campus,unitName,sn){
-  const nm=cleanName(p);const prov=isProv(p);
-  const phone=getPhone(p);
-  const hue=prov?160:h(nm);
-  const rec=getSt(date,campus,unitName,sn,p);
-  const st=rec?rec.status:null;
-  const repBy=rec?rec.replacedBy:"";
-  const stClass=st?"st-"+st:"";
-  const checkinStr=st==="present"&&rec.checkins?String(rec.checkins):"";
-  const isTimestamp=checkinStr.includes(":");
-  let badgeText="Present";
-  if(checkinStr&&isTimestamp){
-    const parts=checkinStr.split(", ");
-    badgeText="Present "+parts[parts.length-1];
-  }
-  const stBadge=st?`<span class="status-badge ${st}">${st==="present"?badgeText:st==="left"?"Left Early":st==="swapped"?"Swapped":st.charAt(0).toUpperCase()+st.slice(1)}</span>`:"";
+  var nm=cleanName(p);var prov=isProv(p);
+  var phone=getPhone(p);
+  var hue=prov?160:h(nm);
+  var rec=getSt(date,campus,unitName,sn,p);
+  var st=rec?rec.status:null;
+  var repBy=rec?rec.replacedBy:"";
+  var stClass=st?"st-"+st:"";
+  var stBadge=makeBadge(st,rec);
   
-  let html=`<div class="person-row ${prov?"provider":""} ${stClass}" onclick="openModal('${date}','${campus}','${unitName.replace(/'/g,"\\'")}','${sn.replace(/'/g,"\\'")}','${p.replace(/'/g,"\\'")}')">
-    <div class="person-avatar" style="background:hsl(${hue},${prov?50:45}%,${prov?30:35}%)">${nm.charAt(0)}${nm.includes(" ")?nm.split(" ").pop().charAt(0):""}</div>
-    <div style="flex:1;min-width:0"><div class="person-name">${nm}</div>${prov?'<div class="person-note prov-tag">Provider</div>':""}${phone?`<div class="person-note phone-tag">\u{1F4F1} ${phone}</div>`:""}${st==="swapped"&&repBy?`<div class="person-note swap-tag">Replaced by ${repBy}</div>`:""}</div>
-    ${stBadge}
-  </div>`;
+  var html='<div class="person-row '+(prov?"provider":"")+" "+stClass+'" onclick="openModal(\''+date+"','"+campus+"','"+unitName.replace(/'/g,"\\'")+"','"+sn.replace(/'/g,"\\'")+"','"+p.replace(/'/g,"\\'")+'\')">'+
+    '<div class="person-avatar" style="background:hsl('+hue+","+(prov?50:45)+"%,"+(prov?30:35)+'%)">'+nm.charAt(0)+(nm.indexOf(" ")>=0?nm.split(" ").pop().charAt(0):"")+'</div>'+
+    '<div style="flex:1;min-width:0"><div class="person-name">'+nm+'</div>'+(prov?'<div class="person-note prov-tag">Provider</div>':"")+(phone?'<div class="person-note phone-tag">\u{1F4F1} '+phone+'</div>':"")+(st==="swapped"&&repBy?'<div class="person-note swap-tag">Replaced by '+repBy+'</div>':"")+'</div>'+
+    stBadge+'</div>';
   
   if(st==="swapped"&&repBy){
-    const repHue=h(repBy);
-    html+=`<div class="person-row replacement">
-      <div class="person-avatar" style="background:hsl(${repHue},50%,30%)">${repBy.charAt(0)}${repBy.includes(" ")?repBy.split(" ").pop().charAt(0):""}</div>
-      <div style="flex:1;min-width:0"><div class="person-name">${repBy}</div><div class="person-note rep-tag">Replacement for ${nm}</div></div>
-    </div>`;
+    var repHue=h(repBy);
+    html+='<div class="person-row replacement">'+
+      '<div class="person-avatar" style="background:hsl('+repHue+',50%,30%)">'+repBy.charAt(0)+(repBy.indexOf(" ")>=0?repBy.split(" ").pop().charAt(0):"")+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="person-name">'+repBy+'</div><div class="person-note rep-tag">Replacement for '+nm+'</div></div></div>';
   }
   return html;
 }
 
 function render(){
-  const dd=D[state.date]||{};const cd=dd[state.campus]||{};
-  let total=0;Object.values(cd).forEach(u=>Object.values(u.shifts||{}).forEach(s=>total+=s.people.length));
-  const units=Object.entries(cd).map(([n,u])=>{
-    const fs=Object.entries(u.shifts||{}).filter(([sn])=>state.shift==="all"?true:state.shift==="day"?isD(sn):!isD(sn));
-    return{name:n,floor:u.floor,shifts:fs}
-  }).filter(u=>u.shifts.length>0);
+  var dd=D[state.date]||{};var cd=dd[state.campus]||{};
+  var total=0;Object.values(cd).forEach(function(u){Object.values(u.shifts||{}).forEach(function(s){total+=s.people.length;});});
+  var units=Object.entries(cd).map(function(e){var n=e[0],u=e[1];
+    var fs=Object.entries(u.shifts||{}).filter(function(e2){var sn=e2[0];return state.shift==="all"?true:state.shift==="day"?isD(sn):!isD(sn);});
+    return{name:n,floor:u.floor,shifts:fs};
+  }).filter(function(u){return u.shifts.length>0;});
 
-  let searchRes=[];
+  var searchRes=[];
   if(state.view==="search"&&state.search.length>=2){
-    const q=state.search.toLowerCase();
-    Object.entries(D).forEach(([date,campuses])=>{
-      Object.entries(campuses).forEach(([camp,cUnits])=>{
-        Object.entries(cUnits).forEach(([unit,udata])=>{
-          Object.entries(udata.shifts||{}).forEach(([sn,sd])=>{
-            sd.people.forEach(p=>{
-              const name=cleanName(p);
-              if(name.toLowerCase().includes(q)){
-                const rec=getSt(date,camp,unit,sn,p);
-                searchRes.push({name,date,campus:camp,unit,shift:sn,time:sd.time,isProvider:isProv(p),person:p,status:rec?rec.status:null,replacedBy:rec?rec.replacedBy:"",phone:getPhone(p)});
+    var q=state.search.toLowerCase();
+    Object.entries(D).forEach(function(e){var date=e[0],campuses=e[1];
+      Object.entries(campuses).forEach(function(e2){var camp=e2[0],cUnits=e2[1];
+        Object.entries(cUnits).forEach(function(e3){var unit=e3[0],udata=e3[1];
+          Object.entries(udata.shifts||{}).forEach(function(e4){var sn=e4[0],sd=e4[1];
+            sd.people.forEach(function(p){
+              var name=cleanName(p);
+              if(name.toLowerCase().indexOf(q)>=0){
+                var rec=getSt(date,camp,unit,sn,p);
+                searchRes.push({name:name,date:date,campus:camp,unit:unit,shift:sn,time:sd.time,isProvider:isProv(p),person:p,status:rec?rec.status:null,replacedBy:rec?rec.replacedBy:"",phone:getPhone(p)});
               }
             });
           });
@@ -446,15 +446,14 @@ function render(){
     });
   }
 
-  const campuses=["North Campus","Mid Campus","South Campus"];
-  const availCampuses=campuses.filter(c=>(dd[c]&&Object.keys(dd[c]).length>0));
-  if(!availCampuses.includes(state.campus)&&availCampuses.length>0){state.campus=availCampuses[0];}
+  var campuses=["North Campus","Mid Campus","South Campus"];
+  var availCampuses=campuses.filter(function(c){return dd[c]&&Object.keys(dd[c]).length>0;});
+  if(availCampuses.indexOf(state.campus)<0&&availCampuses.length>0){state.campus=availCampuses[0];}
 
-  // Count statuses across ALL campuses for current date
-  let presentC=0,missingC=0,swappedC=0,leftC=0;
-  Object.keys(statuses).forEach(k=>{
-    if(k.startsWith(state.date+"||")){
-      const s=statuses[k].status;
+  var presentC=0,missingC=0,swappedC=0,leftC=0;
+  Object.keys(statuses).forEach(function(k){
+    if(k.indexOf(state.date+"||")===0){
+      var s=statuses[k].status;
       if(s==="present")presentC++;
       if(s==="missing")missingC++;
       if(s==="swapped")swappedC++;
@@ -462,181 +461,172 @@ function render(){
     }
   });
 
-  const syncDot=syncStatus==="ok"?'<span class="sync-dot sync-ok"></span>':syncStatus==="error"?'<span class="sync-dot sync-err"></span>':syncStatus==="loading"?'<span class="sync-dot sync-load"></span>':"";
-  const syncLabel=SHEET_URL?(syncDot+'<span style="font-size:9px;color:#64748b">Live</span>'):'<span style="font-size:9px;color:#fbbf24">Offline</span>';
-  const managerLabel=managerName?`<span style="font-size:9px;color:#94a3b8;cursor:pointer" onclick="changeManager()">\u{1F464} ${managerName}</span>`:`<span style="font-size:9px;color:#fbbf24;cursor:pointer" onclick="getManager();render()">Tap to set name</span>`;
+  var syncDot=syncStatus==="ok"?'<span class="sync-dot sync-ok"></span>':syncStatus==="error"?'<span class="sync-dot sync-err"></span>':syncStatus==="loading"?'<span class="sync-dot sync-load"></span>':"";
+  var syncLabel=SHEET_URL?(syncDot+'<span style="font-size:9px;color:#64748b">Live</span>'):'<span style="font-size:9px;color:#fbbf24">Offline</span>';
+  var managerLabel=managerName?'<span style="font-size:9px;color:#94a3b8;cursor:pointer" onclick="changeManager()">\u{1F464} '+managerName+'</span>':'<span style="font-size:9px;color:#fbbf24;cursor:pointer" onclick="getManager();render()">Tap to set name</span>';
 
-  // Build status summary with tappable counters
-  let statusSummary="";
+  var statusSummary="";
   if(presentC||missingC||swappedC||leftC){
-    statusSummary=`<div style="font-size:10px;text-align:right;line-height:1.6">`;
-    if(presentC) statusSummary+=`<span class="stat-tap" onclick="showFilter('present')" style="color:#22c55e">${presentC} here</span><br>`;
-    if(missingC) statusSummary+=`<span class="stat-tap" onclick="showFilter('missing')" style="color:#ef4444">${missingC} missing</span><br>`;
-    if(leftC) statusSummary+=`<span class="stat-tap" onclick="showFilter('left')" style="color:#fbbf24">${leftC} left early</span><br>`;
-    if(swappedC) statusSummary+=`<span class="stat-tap" onclick="showFilter('swapped')" style="color:#a855f7">${swappedC} swapped</span>`;
-    statusSummary+=`</div>`;
+    statusSummary='<div style="font-size:10px;text-align:right;line-height:1.6">';
+    if(presentC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'present\')" style="color:#22c55e">'+presentC+' here</span><br>';
+    if(missingC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'missing\')" style="color:#ef4444">'+missingC+' missing</span><br>';
+    if(leftC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'left\')" style="color:#fbbf24">'+leftC+' left early</span><br>';
+    if(swappedC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'swapped\')" style="color:#a855f7">'+swappedC+' swapped</span>';
+    statusSummary+='</div>';
   }
 
   // Filter popup
-  let filterHtml="";
+  var filterHtml="";
   if(state.filterStatus){
-    const fp=getFilteredPeople(state.filterStatus);
-    const labels={present:"Present",missing:"Missing / No Show",left:"Left Early",swapped:"Swapped"};
-    const colors={present:"#22c55e",missing:"#ef4444",left:"#fbbf24",swapped:"#a855f7"};
-    // Group by campus then day/night
-    const groups={};
-    fp.forEach(r=>{
-      const campShort=r.campus.replace(" Campus","");
-      const dn=r.shift.toLowerCase().includes("day")?"Day Shift":"Night Shift";
-      const key=campShort+"||"+dn;
-      if(!groups[key])groups[key]={campus:campShort,dn,people:[]};
+    var fp=getFilteredPeople(state.filterStatus);
+    var labels={present:"Present",missing:"Missing / No Show",left:"Left Early",swapped:"Swapped"};
+    var colors={present:"#22c55e",missing:"#ef4444",left:"#fbbf24",swapped:"#a855f7"};
+    var groups={};
+    fp.forEach(function(r){
+      var campShort=r.campus.replace(" Campus","");
+      var dn=r.shift.toLowerCase().indexOf("day")>=0?"Day Shift":"Night Shift";
+      var key=campShort+"||"+dn;
+      if(!groups[key])groups[key]={campus:campShort,dn:dn,people:[]};
       groups[key].people.push(r);
     });
-    const groupOrder=["North||Day Shift","North||Night Shift","Mid||Day Shift","Mid||Night Shift","South||Day Shift","South||Night Shift"];
-    const sortedGroups=groupOrder.filter(k=>groups[k]).map(k=>groups[k]);
-    // Add any groups not in the predefined order
-    Object.keys(groups).forEach(k=>{if(!groupOrder.includes(k))sortedGroups.push(groups[k]);});
+    var groupOrder=["North||Day Shift","North||Night Shift","Mid||Day Shift","Mid||Night Shift","South||Day Shift","South||Night Shift"];
+    var sortedGroups=groupOrder.filter(function(k){return groups[k];}).map(function(k){return groups[k];});
+    Object.keys(groups).forEach(function(k){if(groupOrder.indexOf(k)<0)sortedGroups.push(groups[k]);});
     
-    filterHtml=`<div class="filter-overlay" onclick="if(event.target===this)closeFilter()">
-      <div class="filter-modal">
-        <div class="filter-title" style="color:${colors[state.filterStatus]}">${labels[state.filterStatus]} (${fp.length})</div>
-        <div class="filter-subtitle">${fmtDate(state.date)}</div>
-        ${fp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one with this status</div>':""}
-        ${sortedGroups.map(g=>{
-          const dnColor=g.dn==="Day Shift"?"#F26522":"#818cf8";
-          return`<div class="filter-section">
-            <div class="filter-section-title"><span style="color:${dnColor}">${g.campus} / ${g.dn}</span> <span style="color:#64748b;font-weight:400">(${g.people.length})</span></div>
-            ${g.people.map(r=>{
-              const hue=h(r.name);
-              return`<div class="filter-item" onclick="closeFilter();setState({campus:'${r.campus}'});openModal('${state.date}','${r.campus}','${r.unit.replace(/'/g,"\\'")}','${r.shift.replace(/'/g,"\\'")}','${r.person.replace(/'/g,"\\'")}')">
-            <div class="person-avatar" style="background:hsl(${hue},45%,35%)">${r.name.charAt(0)}${r.name.includes(" ")?r.name.split(" ").pop().charAt(0):""}</div>
-            <div style="flex:1;min-width:0"><div class="filter-item-name">${r.name}</div><div class="filter-item-loc">${r.unit}</div>${r.phone?`<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} ${r.phone}</div>`:""}</div>
-          </div>`}).join("")}
-          </div>`}).join("")}
-        <button class="filter-close" onclick="closeFilter()">Close</button>
-      </div>
-    </div>`;
+    filterHtml='<div class="filter-overlay" onclick="if(event.target===this)closeFilter()"><div class="filter-modal">'+
+      '<div class="filter-title" style="color:'+colors[state.filterStatus]+'">'+labels[state.filterStatus]+' ('+fp.length+')</div>'+
+      '<div class="filter-subtitle">'+fmtDate(state.date)+'</div>'+
+      (fp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one with this status</div>':"")+
+      sortedGroups.map(function(g){
+        var dnColor=g.dn==="Day Shift"?"#F26522":"#818cf8";
+        return '<div class="filter-section"><div class="filter-section-title"><span style="color:'+dnColor+'">'+g.campus+' / '+g.dn+'</span> <span style="color:#64748b;font-weight:400">('+g.people.length+')</span></div>'+
+          g.people.map(function(r){
+            var hue2=h(r.name);
+            return '<div class="filter-item" onclick="closeFilter();setState({campus:\''+r.campus+'\'});openModal(\''+state.date+"','"+r.campus+"','"+r.unit.replace(/'/g,"\\'")+"','"+r.shift.replace(/'/g,"\\'")+"','"+r.person.replace(/'/g,"\\'")+'\')">'+
+              '<div class="person-avatar" style="background:hsl('+hue2+',45%,35%)">'+r.name.charAt(0)+(r.name.indexOf(" ")>=0?r.name.split(" ").pop().charAt(0):"")+'</div>'+
+              '<div style="flex:1;min-width:0"><div class="filter-item-name">'+r.name+'</div><div class="filter-item-loc">'+r.unit+'</div>'+(r.phone?'<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} '+r.phone+'</div>':"")+'</div></div>';
+          }).join("")+'</div>';
+      }).join("")+
+      '<button class="filter-close" onclick="closeFilter()">Close</button></div></div>';
   }
 
-  let modalHtml="";
+  // On-shift popup
+  var onShiftHtml="";
+  if(state.filterOnShift){
+    var osp=getAllOnShift();
+    var osGroups={};
+    osp.forEach(function(r){
+      var dn=r.shift.toLowerCase().indexOf("day")>=0?"Day Shift":"Night Shift";
+      if(!osGroups[dn])osGroups[dn]=[];
+      osGroups[dn].push(r);
+    });
+    var osOrder=["Day Shift","Night Shift"];
+    onShiftHtml='<div class="filter-overlay" onclick="if(event.target===this)closeOnShift()"><div class="filter-modal">'+
+      '<div class="filter-title" style="color:#F26522">On Shift ('+osp.length+')</div>'+
+      '<div class="filter-subtitle">'+fmtDate(state.date)+' / '+state.campus+'</div>'+
+      (osp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one on shift</div>':"")+
+      osOrder.filter(function(dn){return osGroups[dn];}).map(function(dn){
+        var dnColor=dn==="Day Shift"?"#F26522":"#818cf8";
+        var ppl=osGroups[dn];
+        return '<div class="filter-section"><div class="filter-section-title"><span style="color:'+dnColor+'">'+dn+'</span> <span style="color:#64748b;font-weight:400">('+ppl.length+')</span></div>'+
+          ppl.map(function(r){
+            var hue2=r.isProvider?160:h(r.name);
+            var rec2=getSt(state.date,r.campus,r.unit,r.shift,r.person);
+            var st2=rec2?rec2.status:null;
+            var badge2=makeBadge(st2,rec2);
+            return '<div class="filter-item" onclick="closeOnShift();openModal(\''+state.date+"','"+r.campus+"','"+r.unit.replace(/'/g,"\\'")+"','"+r.shift.replace(/'/g,"\\'")+"','"+r.person.replace(/'/g,"\\'")+'\')">'+
+              '<div class="person-avatar" style="background:hsl('+hue2+',45%,35%)">'+r.name.charAt(0)+(r.name.indexOf(" ")>=0?r.name.split(" ").pop().charAt(0):"")+'</div>'+
+              '<div style="flex:1;min-width:0"><div class="filter-item-name">'+r.name+(r.isProvider?' <span style="color:#10b981;font-size:10px">(Provider)</span>':"")+'</div><div class="filter-item-loc">'+r.unit+'</div>'+(r.phone?'<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} '+r.phone+'</div>':"")+'</div>'+
+              badge2+'</div>';
+          }).join("")+'</div>';
+      }).join("")+
+      '<button class="filter-close" onclick="closeOnShift()">Close</button></div></div>';
+  }
+
+  // Modal
+  var modalHtml="";
   if(state.modal){
-    const m=state.modal;
-    const rec=getSt(m.date,m.campus,m.unit,m.shift,m.person);
-    const curSt=rec?rec.status:null;
-    const phone=getPhone(m.person);
-    const phoneHtml=phone?`<a class="modal-phone" href="tel:${phone.replace(/[^0-9+]/g,'')}">\u{1F4F1} ${phone}</a>`:'<div style="font-size:12px;color:#475569;margin-bottom:16px">No phone on file</div>';
-    modalHtml=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-      <div class="modal">
-        <div class="modal-name">${m.name}</div>
-        <div class="modal-info">${m.unit} / ${m.shift} / ${fmtDate(m.date)}</div>
-        ${phoneHtml}
-        <div class="modal-btns">
-          <button class="modal-btn${curSt==="present"?" sel":""}" onclick="setStatusModal('present')"><span class="dot" style="background:#22c55e"></span> ${curSt==="present"&&rec&&rec.checkins?"Check In Again":"Present"}</button>
-          ${curSt==="present"&&rec&&rec.checkins?`<div style="font-size:11px;color:#94a3b8;padding:0 12px;margin-top:-4px">Checked in: ${rec.checkins}</div>`:""}
-          <button class="modal-btn${curSt==="missing"?" sel":""}" onclick="setStatusModal('missing')"><span class="dot" style="background:#ef4444"></span> Missing / No Show</button>
-          <button class="modal-btn${curSt==="left"?" sel":""}" onclick="setStatusModal('left')"><span class="dot" style="background:#fbbf24"></span> Left Early</button>
-          <button class="modal-btn${curSt==="removed"?" sel":""}" onclick="setStatusModal('removed')"><span class="dot" style="background:#64748b"></span> Removed</button>
-          <button class="modal-btn${curSt==="swapped"?" sel":""}" onclick="state.showSwap=!state.showSwap;render()"><span class="dot" style="background:#a855f7"></span> Swap / Replace</button>
-          ${state.showSwap?`<div class="swap-form">
-            <label>Who is replacing ${m.name}?</label>
-            <input id="swapName" placeholder="Enter replacement name" value="${rec&&rec.replacedBy?rec.replacedBy:""}" />
-            <div class="swap-btns">
-              <button onclick="doSwap(false)">Today Only</button>
-              <button class="swap-perm" onclick="doSwap(true)">Rest of Project</button>
-            </div>
-          </div>`:""}
-          <button class="modal-btn" onclick="setStatusModal(null)"><span class="dot" style="background:#334155;border:1px solid #475569"></span> Clear Status</button>
-        </div>
-        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      </div>
-    </div>`;
+    var m=state.modal;
+    var rec=getSt(m.date,m.campus,m.unit,m.shift,m.person);
+    var curSt=rec?rec.status:null;
+    var phone=getPhone(m.person);
+    var phoneHtml=phone?'<a class="modal-phone" href="tel:'+phone.replace(/[^0-9+]/g,'')+'">\u{1F4F1} '+phone+'</a>':'<div style="font-size:12px;color:#475569;margin-bottom:16px">No phone on file</div>';
+    var checkinInfo="";
+    if(curSt==="present"&&rec&&rec.checkins&&String(rec.checkins).indexOf(":")>=0){
+      checkinInfo='<div style="font-size:11px;color:#94a3b8;padding:0 12px;margin-top:-4px;margin-bottom:4px">Checked in: '+rec.checkins+'</div>';
+    }
+    modalHtml='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal">'+
+      '<div class="modal-name">'+m.name+'</div>'+
+      '<div class="modal-info">'+m.unit+' / '+m.shift+' / '+fmtDate(m.date)+'</div>'+
+      phoneHtml+
+      '<div class="modal-btns">'+
+        '<button class="modal-btn'+(curSt==="present"?" sel":"")+'" onclick="setStatusModal(\'present\')"><span class="dot" style="background:#22c55e"></span> '+(curSt==="present"&&rec&&rec.checkins?"Check In Again":"Present")+'</button>'+
+        checkinInfo+
+        '<button class="modal-btn'+(curSt==="missing"?" sel":"")+'" onclick="setStatusModal(\'missing\')"><span class="dot" style="background:#ef4444"></span> Missing / No Show</button>'+
+        '<button class="modal-btn'+(curSt==="left"?" sel":"")+'" onclick="setStatusModal(\'left\')"><span class="dot" style="background:#fbbf24"></span> Left Early</button>'+
+        '<button class="modal-btn'+(curSt==="removed"?" sel":"")+'" onclick="setStatusModal(\'removed\')"><span class="dot" style="background:#64748b"></span> Removed</button>'+
+        '<button class="modal-btn'+(curSt==="swapped"?" sel":"")+'" onclick="state.showSwap=!state.showSwap;render()"><span class="dot" style="background:#a855f7"></span> Swap / Replace</button>'+
+        (state.showSwap?'<div class="swap-form"><label>Who is replacing '+m.name+'?</label><input id="swapName" placeholder="Enter replacement name" value="'+(rec&&rec.replacedBy?rec.replacedBy:"")+'" /><div class="swap-btns"><button onclick="doSwap(false)">Today Only</button><button class="swap-perm" onclick="doSwap(true)">Rest of Project</button></div></div>':"")+
+        '<button class="modal-btn" onclick="setStatusModal(null)"><span class="dot" style="background:#334155;border:1px solid #475569"></span> Clear Status</button>'+
+      '</div>'+
+      '<button class="modal-cancel" onclick="closeModal()">Cancel</button>'+
+    '</div></div>';
   }
 
-  let mainHtml=`
-    <div class="header">
-      <div class="header-row"><div><div class="brand-sub">ReMedi ATE Support</div><div class="brand-title">Schedule Tracker</div><div style="margin-top:2px">${syncLabel} ${SHEET_URL?'<span style="font-size:9px;color:#475569;cursor:pointer" onclick="pullStatuses()"> refresh</span>':''}</div><div style="margin-top:1px">${managerLabel}</div></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        ${statusSummary}
-        <div class="stat-box" onclick="showOnShift()"><div class="stat-num">${total}</div><div class="stat-label">On Shift</div></div>
-      </div></div>
-    </div>
-    <div class="date-scroll">${DATES.map(d=>{const s=shortD(d);return`<button class="date-btn${d===state.date?" active":""}" onclick="setState({date:'${d}'})"><div class="day">${s.day}</div><div class="num">${s.num}</div></button>`}).join("")}</div>
-    <div class="campus-row">${campuses.map(c=>`<button class="campus-btn${c===state.campus?" active":""}${!availCampuses.includes(c)?" disabled":""}" onclick="setState({campus:'${c}'})" ${!availCampuses.includes(c)?'style="opacity:0.3;pointer-events:none"':""}>${c.replace(" Campus","")}</button>`).join("")}</div>
-    <div class="controls-row">
-      <div class="toggle-group"><button class="toggle-btn${state.view==="location"?" active":""}" onclick="setState({view:'location'})">Location</button><button class="toggle-btn${state.view==="search"?" active":""}" onclick="setState({view:'search'})">Search</button></div>
-      <div class="toggle-group shift-group"><button class="toggle-btn${state.shift==="all"?" active":""}" onclick="setState({shift:'all'})">All</button><button class="toggle-btn${state.shift==="day"?" active":""}" onclick="setState({shift:'day'})">Day</button><button class="toggle-btn${state.shift==="night"?" active":""}" onclick="setState({shift:'night'})">Night</button></div>
-    </div>
-    <div class="content">
-      ${state.view==="location"?`
-        <div class="content-label">${fmtDate(state.date)} / ${state.campus} / ${units.length} units</div>
-        ${units.length===0?`<div class="empty-state"><div class="empty-icon">\u{1F4CB}</div><div class="empty-title">No assignments</div></div>`:`
-        <div class="unit-list">${units.map(u=>{
-          const isOpen=state.open===u.name;
-          const pc=u.shifts.reduce((a,[,s])=>a+s.people.length,0);
-          return`<div class="unit-card${isOpen?" open":""}">
-            <button class="unit-header" onclick="setState({open:state.open==='${u.name.replace(/'/g,"\\'")}' ? null : '${u.name.replace(/'/g,"\\'")}' })">
-              <span class="unit-icon">${ICONS[u.name]||"\u{1F3E5}"}</span>
-              <div class="unit-info"><div class="unit-name">${u.name}</div><div class="unit-meta">${u.floor||""} / ${pc} staff</div></div>
-              <span class="unit-arrow">\u{203A}</span>
-            </button>
-            ${isOpen?`<div class="unit-body">${u.shifts.map(([sn,sd])=>{
-              const isDy=isD(sn);
-              return`<div class="shift-section"><div class="shift-header"><span class="shift-label ${isDy?"day":"night"}">${isDy?"DAY":"NIGHT"}</span><span class="shift-time">${sd.time} (${sd.people.length})</span></div>
-              ${sd.people.map(p=>renderPerson(p,state.date,state.campus,u.name,sn)).join("")}</div>`}).join("")}</div>`:""}
-          </div>`}).join("")}</div>`}
-      `:`
-        <div class="search-wrap"><span class="search-icon">\u{1F50D}</span><input class="search-input" placeholder="Search by name..." value="${state.search}" oninput="setState({search:this.value})" autofocus></div>
-        ${state.search.length<2?`<div class="empty-state"><div class="empty-icon">\u{1F50D}</div><div class="empty-title">Type at least 2 characters</div></div>`:`
-        <div class="content-label">${searchRes.length} results</div>
-        ${searchRes.slice(0,50).map(r=>{
-          const stBadge=r.status?`<span class="status-badge ${r.status}" style="margin-top:4px;display:inline-block">${r.status==="left"?"Left Early":r.status==="swapped"?"Swapped":r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>`:"";
-          return`<div class="result-card${r.isProvider?" provider":""}" onclick="openModal('${r.date}','${r.campus}','${r.unit.replace(/'/g,"\\'")}','${r.shift.replace(/'/g,"\\'")}','${r.person.replace(/'/g,"\\'")}')"><div class="result-top"><div class="result-name">${r.name}${r.isProvider?' <span style="color:#10b981;font-size:11px">(Provider)</span>':""}</div><div class="result-date">${fmtDate(r.date)}</div></div><div class="result-unit">${r.unit} / ${r.shift} / ${r.time}</div><div class="result-campus">${r.campus} ${r.phone?'<span style="color:#0EA5E9;font-size:10px">\u{1F4F1} '+r.phone+'</span>':""} ${stBadge} ${r.status==="swapped"&&r.replacedBy?'<span style="color:#a855f7;font-size:10px"> &rarr; '+r.replacedBy+'</span>':""}</div></div>`}).join("")}`}
-      `}
-    </div>`;
+  // Main content
+  var mainHtml='<div class="header"><div class="header-row"><div><div class="brand-sub">ReMedi ATE Support</div><div class="brand-title">Schedule Tracker</div><div style="margin-top:2px">'+syncLabel+(SHEET_URL?' <span style="font-size:9px;color:#475569;cursor:pointer" onclick="pullStatuses()">refresh</span>':"")+'</div><div style="margin-top:1px">'+managerLabel+'</div></div>'+
+    '<div style="display:flex;gap:8px;align-items:center">'+statusSummary+
+    '<div class="stat-box" onclick="showOnShift()"><div class="stat-num">'+total+'</div><div class="stat-label">On Shift</div></div></div></div></div>'+
+    '<div class="date-scroll">'+DATES.map(function(d){var s=shortD(d);return '<button class="date-btn'+(d===state.date?" active":"")+'" onclick="setState({date:\''+d+'\'})"><div class="day">'+s.day+'</div><div class="num">'+s.num+'</div></button>';}).join("")+'</div>'+
+    '<div class="campus-row">'+campuses.map(function(c){var avail=availCampuses.indexOf(c)>=0;return '<button class="campus-btn'+(c===state.campus?" active":"")+'"'+(avail?"":" style=\"opacity:0.3;pointer-events:none\"")+' onclick="setState({campus:\''+c+'\'})">'+c.replace(" Campus","")+'</button>';}).join("")+'</div>'+
+    '<div class="controls-row"><div class="toggle-group"><button class="toggle-btn'+(state.view==="location"?" active":"")+'" onclick="setState({view:\'location\'})">Location</button><button class="toggle-btn'+(state.view==="search"?" active":"")+'" onclick="setState({view:\'search\'})">Search</button></div>'+
+    '<div class="toggle-group shift-group"><button class="toggle-btn'+(state.shift==="all"?" active":"")+'" onclick="setState({shift:\'all\'})">All</button><button class="toggle-btn'+(state.shift==="day"?" active":"")+'" onclick="setState({shift:\'day\'})">Day</button><button class="toggle-btn'+(state.shift==="night"?" active":"")+'" onclick="setState({shift:\'night\'})">Night</button></div></div>';
 
-    // On-shift popup
-    let onShiftHtml="";
-    if(state.filterOnShift){
-      const osp=getAllOnShift();
-      const osGroups={};
-      osp.forEach(r=>{
-        const dn=r.shift.toLowerCase().includes("day")?"Day Shift":"Night Shift";
-        if(!osGroups[dn])osGroups[dn]=[];
-        osGroups[dn].push(r);
+  if(state.view==="location"){
+    mainHtml+='<div class="content"><div class="content-label">'+fmtDate(state.date)+' / '+state.campus+' / '+units.length+' units</div>';
+    if(units.length===0){
+      mainHtml+='<div class="empty-state"><div class="empty-icon">\u{1F4CB}</div><div class="empty-title">No assignments</div></div>';
+    } else {
+      mainHtml+='<div class="unit-list">';
+      units.forEach(function(u){
+        var isOpen=state.open===u.name;
+        var pc=u.shifts.reduce(function(a,e){return a+e[1].people.length;},0);
+        mainHtml+='<div class="unit-card'+(isOpen?" open":"")+'"><button class="unit-header" onclick="setState({open:state.open===\''+u.name.replace(/'/g,"\\'")+'\' ? null : \''+u.name.replace(/'/g,"\\'")+'\'})"><span class="unit-icon">'+(ICONS[u.name]||"\u{1F3E5}")+'</span><div class="unit-info"><div class="unit-name">'+u.name+'</div><div class="unit-meta">'+(u.floor||"")+' / '+pc+' staff</div></div><span class="unit-arrow">\u{203A}</span></button>';
+        if(isOpen){
+          mainHtml+='<div class="unit-body">';
+          u.shifts.forEach(function(e){var sn=e[0],sd=e[1];
+            var isDy=isD(sn);
+            mainHtml+='<div class="shift-section"><div class="shift-header"><span class="shift-label '+(isDy?"day":"night")+'">'+(isDy?"DAY":"NIGHT")+'</span><span class="shift-time">'+sd.time+' ('+sd.people.length+')</span></div>';
+            sd.people.forEach(function(p){mainHtml+=renderPerson(p,state.date,state.campus,u.name,sn);});
+            mainHtml+='</div>';
+          });
+          mainHtml+='</div>';
+        }
+        mainHtml+='</div>';
       });
-      const osOrder=["Day Shift","Night Shift"];
-      onShiftHtml=`<div class="filter-overlay" onclick="if(event.target===this)closeOnShift()">
-        <div class="filter-modal">
-          <div class="filter-title" style="color:#F26522">On Shift (${osp.length})</div>
-          <div class="filter-subtitle">${fmtDate(state.date)} / ${state.campus}</div>
-          ${osp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one on shift</div>':""}
-          ${osOrder.filter(dn=>osGroups[dn]).map(dn=>{
-            const dnColor=dn==="Day Shift"?"#F26522":"#818cf8";
-            const ppl=osGroups[dn];
-            return`<div class="filter-section">
-              <div class="filter-section-title"><span style="color:${dnColor}">${dn}</span> <span style="color:#64748b;font-weight:400">(${ppl.length})</span></div>
-              ${ppl.map(r=>{
-                const hue=r.isProvider?160:h(r.name);
-                const rec=getSt(state.date,r.campus,r.unit,r.shift,r.person);
-                const st=rec?rec.status:null;
-                const stBadge=st?`<span class="status-badge ${st}" style="flex-shrink:0">${st==="left"?"Left Early":st==="swapped"?"Swapped":st.charAt(0).toUpperCase()+st.slice(1)}</span>`:"";
-                return`<div class="filter-item" onclick="closeOnShift();openModal('${state.date}','${r.campus}','${r.unit.replace(/'/g,"\\'")}','${r.shift.replace(/'/g,"\\'")}','${r.person.replace(/'/g,"\\'")}')">
-              <div class="person-avatar" style="background:hsl(${hue},45%,35%)">${r.name.charAt(0)}${r.name.includes(" ")?r.name.split(" ").pop().charAt(0):""}</div>
-              <div style="flex:1;min-width:0"><div class="filter-item-name">${r.name}${r.isProvider?' <span style="color:#10b981;font-size:10px">(Provider)</span>':""}</div><div class="filter-item-loc">${r.unit}</div>${r.phone?`<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} ${r.phone}</div>`:""}</div>
-              ${stBadge}
-            </div>`}).join("")}
-            </div>`}).join("")}
-          <button class="filter-close" onclick="closeOnShift()">Close</button>
-        </div>
-      </div>`;
+      mainHtml+='</div>';
     }
+    mainHtml+='</div>';
+  } else {
+    mainHtml+='<div class="content"><div class="search-wrap"><span class="search-icon">\u{1F50D}</span><input class="search-input" placeholder="Search by name..." value="'+state.search+'" oninput="setState({search:this.value})" autofocus></div>';
+    if(state.search.length<2){
+      mainHtml+='<div class="empty-state"><div class="empty-icon">\u{1F50D}</div><div class="empty-title">Type at least 2 characters</div></div>';
+    } else {
+      mainHtml+='<div class="content-label">'+searchRes.length+' results</div>';
+      searchRes.slice(0,50).forEach(function(r){
+        var stBadge2=r.status?'<span class="status-badge '+r.status+'" style="margin-top:4px;display:inline-block">'+(r.status==="left"?"Left Early":r.status==="swapped"?"Swapped":r.status.charAt(0).toUpperCase()+r.status.slice(1))+'</span>':"";
+        mainHtml+='<div class="result-card'+(r.isProvider?" provider":"")+'" onclick="openModal(\''+r.date+"','"+r.campus+"','"+r.unit.replace(/'/g,"\\'")+"','"+r.shift.replace(/'/g,"\\'")+"','"+r.person.replace(/'/g,"\\'")+'\')"><div class="result-top"><div class="result-name">'+r.name+(r.isProvider?' <span style="color:#10b981;font-size:11px">(Provider)</span>':"")+'</div><div class="result-date">'+fmtDate(r.date)+'</div></div><div class="result-unit">'+r.unit+' / '+r.shift+' / '+r.time+'</div><div class="result-campus">'+r.campus+(r.phone?' <span style="color:#0EA5E9;font-size:10px">\u{1F4F1} '+r.phone+'</span>':"")+" "+stBadge2+(r.status==="swapped"&&r.replacedBy?' <span style="color:#a855f7;font-size:10px"> &rarr; '+r.replacedBy+'</span>':"")+'</div></div>';
+      });
+    }
+    mainHtml+='</div>';
+  }
 
   document.getElementById("app").innerHTML=mainHtml+onShiftHtml+filterHtml+modalHtml;
-  if(state.view==="search"){const i=document.querySelector(".search-input");if(i&&document.activeElement!==i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}
+  if(state.view==="search"){var i=document.querySelector(".search-input");if(i&&document.activeElement!==i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}
 }
-function setState(p){Object.assign(state,p);render();}
+function setState(p){for(var k in p){state[k]=p[k];}render();}
 render();
-setInterval(()=>{if(SHEET_URL)pullStatuses();},30000);
+setInterval(function(){if(SHEET_URL)pullStatuses();},30000);
 </script>
 </body>
 </html>
