@@ -393,8 +393,9 @@ function renderPerson(p,date,campus,unitName,sn){
   const st=rec?rec.status:null;
   const repBy=rec?rec.replacedBy:"";
   const stClass=st?"st-"+st:"";
-  const checkinCount=st==="present"&&rec.checkins?rec.checkins.split(",").length:0;
-  const stBadge=st?`<span class="status-badge ${st}">${st==="present"?(checkinCount>1?"Present ("+checkinCount+")":"Present"):st==="left"?"Left Early":st==="swapped"?"Swapped":st.charAt(0).toUpperCase()+st.slice(1)}</span>`:"";
+  const checkinList=st==="present"&&rec.checkins?rec.checkins.split(", "):[];
+  const lastCheckin=checkinList.length>0?checkinList[checkinList.length-1]:"";
+  const stBadge=st?`<span class="status-badge ${st}">${st==="present"?(lastCheckin?"Present "+lastCheckin:"Present"):st==="left"?"Left Early":st==="swapped"?"Swapped":st.charAt(0).toUpperCase()+st.slice(1)}</span>`:"";
   
   let html=`<div class="person-row ${prov?"provider":""} ${stClass}" onclick="openModal('${date}','${campus}','${unitName.replace(/'/g,"\\'")}','${sn.replace(/'/g,"\\'")}','${p.replace(/'/g,"\\'")}')">
     <div class="person-avatar" style="background:hsl(${hue},${prov?50:45}%,${prov?30:35}%)">${nm.charAt(0)}${nm.includes(" ")?nm.split(" ").pop().charAt(0):""}</div>
