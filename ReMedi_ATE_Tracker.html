@@ -199,15 +199,26 @@ let syncStatus="none";
 
 function stKey(date,campus,unit,shift,person){return date+"||"+campus+"||"+unit+"||"+shift+"||"+person;}
 function getSt(date,campus,unit,shift,person){return statuses[stKey(date,campus,unit,shift,person)]||null;}
+function nowTime(){
+  const d=new Date();
+  let h=d.getHours(),m=d.getMinutes(),ap="a";
+  if(h>=12){ap="p";if(h>12)h-=12;}
+  if(h===0)h=12;
+  return h+":"+("0"+m).slice(-2)+ap;
+}
 function setSt(date,campus,unit,shift,person,st,replacedBy,note){
   const k=stKey(date,campus,unit,shift,person);
-  if(!st){delete statuses[k];if(SHEET_URL)pushStatus(date,campus,unit,shift,person,"",replacedBy,note,0);return;}
+  if(!st){delete statuses[k];if(SHEET_URL)pushStatus(date,campus,unit,shift,person,"",replacedBy,note,"");return;}
   const existing=statuses[k];
-  let checkins=1;
-  if(existing&&existing.status==="present"&&st==="present"){
-    checkins=(existing.checkins||1)+1;
+  let checkins="";
+  if(st==="present"){
+    const ts=nowTime()+" ("+managerName+")";
+    if(existing&&existing.status==="present"&&existing.checkins){
+      checkins=existing.checkins+", "+ts;
+    } else {
+      checkins=ts;
+    }
   }
-  if(st!=="present")checkins=0;
   statuses[k]={status:st,replacedBy:replacedBy||"",note:note||"",checkins:checkins};
   if(SHEET_URL)pushStatus(date,campus,unit,shift,person,st,replacedBy,note,checkins);
 }
@@ -259,7 +270,7 @@ function changeManager(){
 function pushStatus(date,campus,unit,shift,person,st,replacedBy,note,checkins){
   saveLocal();
   syncStatus="loading";render();
-  const url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(campus)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"")+"&manager="+enc(managerName)+"&checkins="+enc(checkins||0);
+  const url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(campus)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"")+"&manager="+enc(managerName)+"&checkins="+enc(checkins||"");
   jsonp(url).then(()=>{syncStatus="ok";render();}).catch(()=>{syncStatus="error";render();});
 }
 
@@ -272,7 +283,7 @@ function pullStatuses(){
     rows.forEach(r=>{
       if(r.status){
         const k=stKey(r.date,r.campus,r.unit,r.shift,r.person);
-        fresh[k]={status:r.status,replacedBy:r.replacedBy||"",note:r.note||"",checkins:parseInt(r.checkins)||0};
+        fresh[k]={status:r.status,replacedBy:r.replacedBy||"",note:r.note||"",checkins:r.checkins||""};
       }
     });
     statuses=fresh;
@@ -382,7 +393,8 @@ function renderPerson(p,date,campus,unitName,sn){
   const st=rec?rec.status:null;
   const repBy=rec?rec.replacedBy:"";
   const stClass=st?"st-"+st:"";
-  const stBadge=st?`<span class="status-badge ${st}">${st==="present"?(rec.checkins>1?"Present ("+rec.checkins+")":"Present"):st==="left"?"Left Early":st==="swapped"?"Swapped":st.charAt(0).toUpperCase()+st.slice(1)}</span>`:"";
+  const checkinCount=st==="present"&&rec.checkins?rec.checkins.split(",").length:0;
+  const stBadge=st?`<span class="status-badge ${st}">${st==="present"?(checkinCount>1?"Present ("+checkinCount+")":"Present"):st==="left"?"Left Early":st==="swapped"?"Swapped":st.charAt(0).toUpperCase()+st.slice(1)}</span>`:"";
   
   let html=`<div class="person-row ${prov?"provider":""} ${stClass}" onclick="openModal('${date}','${campus}','${unitName.replace(/'/g,"\\'")}','${sn.replace(/'/g,"\\'")}','${p.replace(/'/g,"\\'")}')">
     <div class="person-avatar" style="background:hsl(${hue},${prov?50:45}%,${prov?30:35}%)">${nm.charAt(0)}${nm.includes(" ")?nm.split(" ").pop().charAt(0):""}</div>
@@ -513,7 +525,8 @@ function render(){
         <div class="modal-info">${m.unit} / ${m.shift} / ${fmtDate(m.date)}</div>
         ${phoneHtml}
         <div class="modal-btns">
-          <button class="modal-btn${curSt==="present"?" sel":""}" onclick="setStatusModal('present')"><span class="dot" style="background:#22c55e"></span> ${curSt==="present"&&rec&&rec.checkins?"Check In Again ("+rec.checkins+" so far)":"Present"}</button>
+          <button class="modal-btn${curSt==="present"?" sel":""}" onclick="setStatusModal('present')"><span class="dot" style="background:#22c55e"></span> ${curSt==="present"&&rec&&rec.checkins?"Check In Again":"Present"}</button>
+          ${curSt==="present"&&rec&&rec.checkins?`<div style="font-size:11px;color:#94a3b8;padding:0 12px;margin-top:-4px">Checked in: ${rec.checkins}</div>`:""}
           <button class="modal-btn${curSt==="missing"?" sel":""}" onclick="setStatusModal('missing')"><span class="dot" style="background:#ef4444"></span> Missing / No Show</button>
           <button class="modal-btn${curSt==="left"?" sel":""}" onclick="setStatusModal('left')"><span class="dot" style="background:#fbbf24"></span> Left Early</button>
           <button class="modal-btn${curSt==="removed"?" sel":""}" onclick="setStatusModal('removed')"><span class="dot" style="background:#64748b"></span> Removed</button>
