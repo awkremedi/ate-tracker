@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HF Tracker">
+<meta name="theme-color" content="#0B1121">
+<title>ReMedi Henry Ford Go-Live Tracker</title>
+<style>
+:root{--navy:#0B1121;--navy-light:#111B2E;--teal:#0EA5E9;--teal-dim:rgba(14,165,233,0.15);--teal-border:rgba(14,165,233,0.25);--orange:#F26522;--orange-dim:rgba(242,101,34,0.15);--orange-border:rgba(242,101,34,0.3);--green:#22c55e;--red:#ef4444;--yellow:#fbbf24;--purple:#a855f7;--text:#e8eaf0;--muted:#94a3b8;--subtle:#64748b;--card-bg:rgba(255,255,255,0.025);--card-border:rgba(255,255,255,0.05);--hover-bg:rgba(255,255,255,0.04);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 0%,rgba(14,165,233,0.08) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.app{position:relative;z-index:1;padding-bottom:40px;}
+.header{padding:20px 20px 12px;background:linear-gradient(180deg,rgba(14,165,233,0.12) 0%,transparent 100%);padding-top:max(20px,env(safe-area-inset-top));}
+.header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.brand-sub{font-size:11px;font-weight:600;letter-spacing:2px;color:var(--orange);text-transform:uppercase;}
+.brand-title{font-size:22px;font-weight:700;letter-spacing:-0.5px;color:#fff;}
+.stat-box{background:var(--orange-dim);border-radius:12px;padding:8px 14px;border:1px solid var(--orange-border);text-align:center;cursor:pointer;}
+.stat-box:active{background:rgba(242,101,34,0.25);}
+.stat-num{font-size:22px;font-weight:700;color:var(--orange);}
+.stat-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+.sync-ok{background:var(--green);}.sync-err{background:var(--red);}.sync-load{background:var(--yellow);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.date-scroll{display:flex;gap:6px;padding:0 20px 14px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.date-scroll::-webkit-scrollbar{display:none;}
+.date-btn{flex-shrink:0;width:44px;padding:8px 0;border-radius:12px;background:var(--hover-bg);border:1px solid rgba(255,255,255,0.06);color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.15s ease;}
+.date-btn.active{background:var(--orange);border-color:var(--orange);color:#fff;}
+.date-btn .day{font-size:10px;font-weight:500;opacity:0.7;}
+.date-btn .num{font-size:16px;font-weight:500;}
+.date-btn.active .num{font-weight:700;}
+.site-scroll{display:flex;gap:6px;padding:0 20px 12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.site-scroll::-webkit-scrollbar{display:none;}
+.site-btn{flex-shrink:0;padding:9px 14px;border-radius:10px;background:var(--hover-bg);border:1px solid rgba(255,255,255,0.06);color:var(--subtle);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s ease;white-space:nowrap;}
+.site-btn.active{background:var(--teal-dim);border-color:var(--teal-border);color:var(--teal);}
+.controls-row{padding:0 20px 14px;display:flex;gap:8px;align-items:center;}
+.toggle-group{display:flex;background:var(--hover-bg);border-radius:8px;border:1px solid rgba(255,255,255,0.06);overflow:hidden;}
+.toggle-btn{padding:7px 14px;background:transparent;border:none;color:var(--subtle);font-size:12px;font-weight:600;cursor:pointer;}
+.toggle-btn.active{background:var(--teal-dim);color:var(--teal);}
+.shift-group{margin-left:auto;}
+.shift-group .toggle-btn{padding:7px 10px;}
+.content{padding:0 20px;}
+.content-label{font-size:12px;color:var(--subtle);margin-bottom:12px;font-weight:500;}
+.empty-state{text-align:center;padding:40px;color:var(--subtle);background:var(--card-bg);border-radius:16px;border:1px solid var(--card-border);}
+.empty-icon{font-size:36px;margin-bottom:12px;}
+.empty-title{font-size:14px;font-weight:500;}
+.unit-list{display:flex;flex-direction:column;gap:8px;}
+.unit-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;overflow:hidden;}
+.unit-card.open{background:rgba(14,165,233,0.04);border-color:rgba(14,165,233,0.12);}
+.unit-header{width:100%;padding:14px 16px;display:flex;align-items:center;background:none;border:none;color:var(--text);cursor:pointer;gap:12px;text-align:left;font-family:inherit;}
+.unit-icon{font-size:22px;flex-shrink:0;}
+.unit-info{flex:1;min-width:0;}
+.unit-name{font-size:14px;font-weight:600;line-height:1.3;}
+.unit-meta{font-size:11px;color:var(--subtle);margin-top:2px;}
+.unit-arrow{font-size:14px;color:var(--subtle);transition:transform 0.2s;}
+.unit-card.open .unit-arrow{transform:rotate(90deg);}
+.unit-body{padding:0 16px 14px;}
+.shift-section{margin-top:8px;}
+.shift-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.shift-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;}
+.shift-label.day{color:var(--orange);}
+.shift-label.night{color:#818cf8;}
+.shift-time{font-size:10px;color:var(--subtle);background:var(--hover-bg);padding:2px 8px;border-radius:6px;}
+.person-row{display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:4px;background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid rgba(255,255,255,0.04);cursor:pointer;position:relative;}
+.person-row.st-present{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.08);}
+.person-row.st-missing{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);opacity:0.7;}
+.person-row.st-left{border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.08);opacity:0.8;}
+.person-row.st-removed{opacity:0.3;text-decoration:line-through;}
+.person-row.st-swapped{border-color:rgba(168,85,247,0.3);background:rgba(168,85,247,0.08);opacity:0.5;text-decoration:line-through;}
+.person-row.replacement{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.06);border-style:dashed;}
+.person-avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.person-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.person-note{font-size:10px;margin-top:1px;}
+.person-note.swap-tag{color:var(--purple);}
+.person-note.rep-tag{color:var(--green);}
+.person-note.phone-tag{color:var(--teal);}
+.person-note.hotel-tag{color:var(--muted);}
+.status-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px;margin-left:auto;flex-shrink:0;}
+.status-badge.present{background:rgba(34,197,94,0.2);color:var(--green);}
+.status-badge.missing{background:rgba(239,68,68,0.2);color:var(--red);}
+.status-badge.left{background:rgba(251,191,36,0.2);color:var(--yellow);}
+.status-badge.removed{background:rgba(100,116,139,0.2);color:var(--subtle);}
+.status-badge.swapped{background:rgba(168,85,247,0.2);color:var(--purple);}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:flex-end;justify-content:center;}
+.modal{background:var(--navy-light);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;}
+.modal-name{font-size:18px;font-weight:700;margin-bottom:4px;}
+.modal-info{font-size:12px;color:var(--subtle);margin-bottom:12px;}
+.modal-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.modal-phone{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:10px;color:var(--orange);font-size:14px;font-weight:600;text-decoration:none;}
+.modal-phone:active{background:rgba(242,101,34,0.25);}
+.modal-hotel{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--hover-bg);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:var(--muted);font-size:13px;font-weight:500;}
+.modal-btns{display:flex;flex-direction:column;gap:8px;}
+.modal-btn{padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:var(--hover-bg);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit;}
+.modal-btn:active{background:rgba(255,255,255,0.1);}
+.modal-btn.sel{border-color:var(--teal);background:var(--teal-dim);color:var(--teal);}
+.modal-btn .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.modal-cancel{padding:14px;border-radius:12px;border:none;background:rgba(255,255,255,0.06);color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;}
+.swap-form{margin-top:12px;padding:14px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:12px;}
+.swap-form label{font-size:12px;color:var(--purple);font-weight:600;display:block;margin-bottom:8px;}
+.swap-form input{width:100%;padding:12px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:var(--text);font-size:14px;font-family:inherit;margin-bottom:8px;}
+.swap-form input::placeholder{color:var(--subtle);}
+.swap-form .swap-btns{display:flex;gap:8px;}
+.swap-form button{flex:1;padding:12px;border-radius:8px;background:var(--teal);border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.swap-form button.swap-perm{background:var(--red);}
+.search-wrap{position:relative;margin-bottom:16px;}
+.search-input{width:100%;padding:14px 16px 14px 42px;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:15px;outline:none;font-family:inherit;}
+.search-input:focus{border-color:var(--teal-border);}
+.search-input::placeholder{color:var(--subtle);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:0.4;}
+.result-card{padding:12px 14px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;margin-bottom:6px;cursor:pointer;}
+.result-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.result-name{font-size:14px;font-weight:600;}
+.result-date{font-size:10px;color:var(--orange);background:var(--orange-dim);padding:3px 8px;border-radius:6px;font-weight:600;flex-shrink:0;}
+.result-unit{font-size:11px;color:var(--subtle);margin-top:4px;}
+.result-campus{font-size:10px;color:var(--subtle);margin-top:2px;}
+.filter-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:flex-end;justify-content:center;}
+.filter-modal{background:var(--navy-light);border-radius:20px 20px 0 0;padding:20px 20px 40px;width:100%;max-width:480px;max-height:70vh;overflow-y:auto;}
+.filter-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px;}
+.filter-subtitle{font-size:12px;color:var(--subtle);margin-bottom:16px;}
+.filter-item{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:4px;background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid rgba(255,255,255,0.04);cursor:pointer;}
+.filter-item:active{background:rgba(255,255,255,0.06);}
+.filter-item .person-avatar{width:28px;height:28px;font-size:11px;}
+.filter-item-name{font-size:13px;font-weight:500;flex:1;}
+.filter-item-loc{font-size:10px;color:var(--subtle);}
+.filter-close{padding:14px;border-radius:12px;border:none;background:rgba(255,255,255,0.06);color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-top:12px;font-family:inherit;}
+.filter-section{margin-bottom:16px;}
+.filter-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:8px 0 6px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:8px;}
+.stat-tap{cursor:pointer;padding:2px 6px;border-radius:6px;transition:background 0.15s;}
+.stat-tap:active{background:rgba(255,255,255,0.1);}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+var D={"2026-06-06":{"St. John":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Linu Abraham","Vincent Akinola","Shivan Patel"]},"Night Shift":{"time":"6p-6a","people":["Rehan Batouta"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Cassie Parker","Atif Waseem","Ethan Yang"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Trevor Cook"]},"Night Shift":{"time":"7p-7a","people":["Sam Khozin","Davey Wright"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kasandra White"]},"Night Shift":{"time":"6p-6a","people":["Ngozi Egu"]}}}},"Southfield":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Madina Fawaz","Nikki Chopra"]},"Night Shift":{"time":"6p-6a","people":["Victor Akinola"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ikwo Bassey","Faiq Tariq"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Amit Goyal"]},"Night Shift":{"time":"7p-7a","people":["Issachar Devine","Mustafa Turkmani"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Eunice Owolade"]},"Night Shift":{"time":"6p-6a","people":["Eunice Yakubu"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Khaled Hawatmeh"]}}}},"Novi":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ryan Ismail","Theresa Hahn"]},"Night Shift":{"time":"6p-6a","people":["Kevin Lye"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kam Nazir","Susan Nicholas"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tariq Nakhooda"]},"Night Shift":{"time":"7p-7a","people":["Oyeniyi Oyibamiji"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Bhakta"]},"Night Shift":{"time":"6p-6a","people":["Deiufaite Lorient"]}}}},"Warren":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Laura Bultman","Nelson Ambe"]},"Night Shift":{"time":"6p-6a","people":["Muyiwa Alade"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ali Jouni","Jide Adewumi"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Jason Lowe"]},"Night Shift":{"time":"7p-7a","people":["Dunni Osofisan"]}}}},"Rochester":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Saman Barznji","Bashar Hammad"]},"Night Shift":{"time":"6p-6a","people":["Omer Shah"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Daphne Kontos","Allyson Stone"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Greg Cohan"]},"Night Shift":{"time":"7p-7a","people":["Afua Anning"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Srivastava"]},"Night Shift":{"time":"6p-6a","people":["Ahmed Adan"]}}}},"River District":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Dara Lundon"]}}}},"Virtual":{"IP Surgeon (Nights) - Virtual":{"floor":"","shifts":{"Night Shift":{"time":"6p-6a","people":["Heather Paddock","Nathan Bodette"]}}},"Ambulatory Virtual":{"floor":"","shifts":{"Day Shift":{"time":"8a-5p","people":["Sara Helvey","Daniel Carnegie"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tomi Kolade"]}}}},"23 Mile Road Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Wei Krupa"]}}}},"St. Clair Shores Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rohit Tonk"]}}}},"Madison Heights Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Naseem Rezenejad"]}}}},"26 Mile Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Rishi Sarna"]}}}}},"2026-06-07":{"St. John":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Linu Abraham","Vincent Akinola","Shivan Patel"]},"Night Shift":{"time":"6p-6a","people":["Rehan Batouta"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Cassie Parker","Atif Waseem","Ethan Yang"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Trevor Cook"]},"Night Shift":{"time":"7p-7a","people":["Sam Khozin","Davey Wright"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kasandra White"]},"Night Shift":{"time":"6p-6a","people":["Ngozi Egu"]}}}},"Southfield":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Madina Fawaz","Nikki Chopra"]},"Night Shift":{"time":"6p-6a","people":["Victor Akinola"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ikwo Bassey","Faiq Tariq"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Amit Goyal"]},"Night Shift":{"time":"7p-7a","people":["Issachar Devine","Mustafa Turkmani"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Eunice Owolade"]},"Night Shift":{"time":"6p-6a","people":["Eunice Yakubu"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Khaled Hawatmeh"]}}}},"Novi":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ryan Ismail","Theresa Hahn"]},"Night Shift":{"time":"6p-6a","people":["Kevin Lye"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kam Nazir","Susan Nicholas"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tariq Nakhooda"]},"Night Shift":{"time":"7p-7a","people":["Oyeniyi Oyibamiji"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Bhakta"]},"Night Shift":{"time":"6p-6a","people":["Deiufaite Lorient"]}}}},"Warren":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Laura Bultman","Nelson Ambe"]},"Night Shift":{"time":"6p-6a","people":["Muyiwa Alade"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ali Jouni","Jide Adewumi"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Jason Lowe"]},"Night Shift":{"time":"7p-7a","people":["Dunni Osofisan"]}}}},"Rochester":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Saman Barznji","Bashar Hammad"]},"Night Shift":{"time":"6p-6a","people":["Omer Shah"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Daphne Kontos","Allyson Stone"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Greg Cohan"]},"Night Shift":{"time":"7p-7a","people":["Afua Anning"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Srivastava"]},"Night Shift":{"time":"6p-6a","people":["Ahmed Adan"]}}}},"River District":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Dara Lundon"]}}}},"Virtual":{"IP Surgeon (Nights) - Virtual":{"floor":"","shifts":{"Night Shift":{"time":"6p-6a","people":["Heather Paddock","Nathan Bodette"]}}},"Ambulatory Virtual":{"floor":"","shifts":{"Day Shift":{"time":"8a-5p","people":["Sara Helvey","Daniel Carnegie"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tomi Kolade"]}}}},"23 Mile Road Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Wei Krupa"]}}}},"St. Clair Shores Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rohit Tonk"]}}}},"Madison Heights Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Naseem Rezenejad"]}}}},"26 Mile Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Rishi Sarna"]}}}}},"2026-06-08":{"St. John":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Linu Abraham","Vincent Akinola","Shivan Patel"]},"Night Shift":{"time":"6p-6a","people":["Rehan Batouta"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Cassie Parker","Atif Waseem","Ethan Yang"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Trevor Cook"]},"Night Shift":{"time":"7p-7a","people":["Sam Khozin","Davey Wright"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kasandra White"]},"Night Shift":{"time":"6p-6a","people":["Ngozi Egu"]}}}},"Southfield":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Madina Fawaz","Nikki Chopra"]},"Night Shift":{"time":"6p-6a","people":["Victor Akinola"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ikwo Bassey","Faiq Tariq"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Amit Goyal"]},"Night Shift":{"time":"7p-7a","people":["Issachar Devine","Mustafa Turkmani"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Eunice Owolade"]},"Night Shift":{"time":"6p-6a","people":["Eunice Yakubu"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Khaled Hawatmeh"]}}}},"Novi":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ryan Ismail","Theresa Hahn"]},"Night Shift":{"time":"6p-6a","people":["Kevin Lye"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kam Nazir","Susan Nicholas"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tariq Nakhooda"]},"Night Shift":{"time":"7p-7a","people":["Oyeniyi Oyibamiji"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Bhakta"]},"Night Shift":{"time":"6p-6a","people":["Deiufaite Lorient"]}}}},"Warren":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Laura Bultman","Nelson Ambe"]},"Night Shift":{"time":"6p-6a","people":["Muyiwa Alade"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ali Jouni","Jide Adewumi"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Jason Lowe"]},"Night Shift":{"time":"7p-7a","people":["Dunni Osofisan"]}}}},"Rochester":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Saman Barznji","Bashar Hammad"]},"Night Shift":{"time":"6p-6a","people":["Omer Shah"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Daphne Kontos","Allyson Stone"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Greg Cohan"]},"Night Shift":{"time":"7p-7a","people":["Afua Anning"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Srivastava"]},"Night Shift":{"time":"6p-6a","people":["Ahmed Adan"]}}}},"River District":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Dara Lundon"]}}}},"Virtual":{"IP Surgeon (Nights) - Virtual":{"floor":"","shifts":{"Night Shift":{"time":"6p-6a","people":["Heather Paddock","Nathan Bodette"]}}},"Ambulatory Virtual":{"floor":"","shifts":{"Day Shift":{"time":"8a-5p","people":["Sara Helvey","Daniel Carnegie"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tomi Kolade"]}}}},"23 Mile Road Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Wei Krupa"]}}}},"St. Clair Shores Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rohit Tonk"]}}}},"Henry Ford Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rahil Krishana"]}}}},"Madison Heights Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Naseem Rezenejad"]}}}},"26 Mile Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Rishi Sarna"]}}}}},"2026-06-09":{"St. John":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Linu Abraham","Vincent Akinola","Shivan Patel"]},"Night Shift":{"time":"6p-6a","people":["Rehan Batouta"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Cassie Parker","Atif Waseem","Ethan Yang"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Trevor Cook"]},"Night Shift":{"time":"7p-7a","people":["Sam Khozin","Davey Wright"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kasandra White"]},"Night Shift":{"time":"6p-6a","people":["Ngozi Egu"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Khaled Hawatmeh"]}}}},"Southfield":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Madina Fawaz","Nikki Chopra"]},"Night Shift":{"time":"6p-6a","people":["Victor Akinola"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ikwo Bassey","Faiq Tariq"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Amit Goyal"]},"Night Shift":{"time":"7p-7a","people":["Issachar Devine","Mustafa Turkmani"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Eunice Owolade"]},"Night Shift":{"time":"6p-6a","people":["Eunice Yakubu"]}}}},"Novi":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ryan Ismail","Theresa Hahn"]},"Night Shift":{"time":"6p-6a","people":["Kevin Lye"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kam Nazir","Susan Nicholas"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tariq Nakhooda"]},"Night Shift":{"time":"7p-7a","people":["Oyeniyi Oyibamiji"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Bhakta"]},"Night Shift":{"time":"6p-6a","people":["Deiufaite Lorient"]}}}},"Warren":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Laura Bultman","Nelson Ambe"]},"Night Shift":{"time":"6p-6a","people":["Muyiwa Alade"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ali Jouni","Jide Adewumi"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Jason Lowe"]},"Night Shift":{"time":"7p-7a","people":["Dunni Osofisan"]}}}},"Rochester":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Saman Barznji","Bashar Hammad"]},"Night Shift":{"time":"6p-6a","people":["Omer Shah"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Daphne Kontos","Allyson Stone"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Greg Cohan"]},"Night Shift":{"time":"7p-7a","people":["Afua Anning"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Srivastava"]},"Night Shift":{"time":"6p-6a","people":["Ahmed Adan"]}}}},"River District":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Dara Lundon"]}}}},"Virtual":{"IP Surgeon (Nights) - Virtual":{"floor":"","shifts":{"Night Shift":{"time":"6p-6a","people":["Heather Paddock","Nathan Bodette"]}}},"Ambulatory Virtual":{"floor":"","shifts":{"Day Shift":{"time":"8a-5p","people":["Sara Helvey","Daniel Carnegie"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tomi Kolade"]}}}},"23 Mile Road Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Wei Krupa"]}}}},"St. Clair Shores Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rohit Tonk"]}}}},"Henry Ford Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rahil Krishana"]}}}},"Madison Heights Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Naseem Rezenejad"]}}}},"26 Mile Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Rishi Sarna"]}}}}},"2026-06-10":{"St. John":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Linu Abraham","Vincent Akinola","Shivan Patel"]},"Night Shift":{"time":"6p-6a","people":["Rehan Batouta"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Cassie Parker","Atif Waseem","Ethan Yang"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Trevor Cook"]},"Night Shift":{"time":"7p-7a","people":["Sam Khozin","Davey Wright"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kasandra White"]},"Night Shift":{"time":"6p-6a","people":["Ngozi Egu"]}}}},"Southfield":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Madina Fawaz","Nikki Chopra"]},"Night Shift":{"time":"6p-6a","people":["Victor Akinola"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ikwo Bassey","Faiq Tariq"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Amit Goyal"]},"Night Shift":{"time":"7p-7a","people":["Issachar Devine","Mustafa Turkmani"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Eunice Owolade"]},"Night Shift":{"time":"6p-6a","people":["Eunice Yakubu"]}}}},"Novi":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ryan Ismail","Theresa Hahn"]},"Night Shift":{"time":"6p-6a","people":["Kevin Lye"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kam Nazir","Susan Nicholas"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tariq Nakhooda"]},"Night Shift":{"time":"7p-7a","people":["Oyeniyi Oyibamiji"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Bhakta"]},"Night Shift":{"time":"6p-6a","people":["Deiufaite Lorient"]}}}},"Warren":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Laura Bultman","Nelson Ambe"]},"Night Shift":{"time":"6p-6a","people":["Muyiwa Alade"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ali Jouni","Jide Adewumi"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Jason Lowe"]},"Night Shift":{"time":"7p-7a","people":["Dunni Osofisan"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Khaled Hawatmeh"]}}}},"Rochester":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Saman Barznji","Bashar Hammad"]},"Night Shift":{"time":"6p-6a","people":["Omer Shah"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Daphne Kontos","Allyson Stone"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Greg Cohan"]},"Night Shift":{"time":"7p-7a","people":["Afua Anning"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Srivastava"]},"Night Shift":{"time":"6p-6a","people":["Ahmed Adan"]}}}},"River District":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Dara Lundon"]}}}},"Virtual":{"IP Surgeon (Nights) - Virtual":{"floor":"","shifts":{"Night Shift":{"time":"6p-6a","people":["Heather Paddock","Nathan Bodette"]}}},"Ambulatory Virtual":{"floor":"","shifts":{"Day Shift":{"time":"8a-5p","people":["Sara Helvey","Daniel Carnegie"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tomi Kolade"]}}}},"23 Mile Road Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Wei Krupa"]}}}},"St. Clair Shores Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rohit Tonk"]}}}},"Henry Ford Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rahil Krishana"]}}}},"Madison Heights Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Naseem Rezenejad"]}}}},"26 Mile Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Rishi Sarna"]}}}}},"2026-06-11":{"St. John":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Linu Abraham","Vincent Akinola","Shivan Patel"]},"Night Shift":{"time":"6p-6a","people":["Rehan Batouta"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Cassie Parker","Atif Waseem","Ethan Yang"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Trevor Cook"]},"Night Shift":{"time":"7p-7a","people":["Sam Khozin","Davey Wright"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kasandra White"]},"Night Shift":{"time":"6p-6a","people":["Ngozi Egu"]}}}},"Southfield":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Madina Fawaz","Nikki Chopra"]},"Night Shift":{"time":"6p-6a","people":["Victor Akinola"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ikwo Bassey","Faiq Tariq"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Amit Goyal"]},"Night Shift":{"time":"7p-7a","people":["Issachar Devine","Mustafa Turkmani"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Eunice Owolade"]},"Night Shift":{"time":"6p-6a","people":["Eunice Yakubu"]}}}},"Novi":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ryan Ismail","Theresa Hahn"]},"Night Shift":{"time":"6p-6a","people":["Kevin Lye"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kam Nazir","Susan Nicholas"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tariq Nakhooda"]},"Night Shift":{"time":"7p-7a","people":["Oyeniyi Oyibamiji"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Bhakta"]},"Night Shift":{"time":"6p-6a","people":["Deiufaite Lorient"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Khaled Hawatmeh"]}}}},"Warren":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Laura Bultman","Nelson Ambe"]},"Night Shift":{"time":"6p-6a","people":["Muyiwa Alade"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ali Jouni","Jide Adewumi"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Jason Lowe"]},"Night Shift":{"time":"7p-7a","people":["Dunni Osofisan"]}}}},"Rochester":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Saman Barznji","Bashar Hammad"]},"Night Shift":{"time":"6p-6a","people":["Omer Shah"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Daphne Kontos","Allyson Stone"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Greg Cohan"]},"Night Shift":{"time":"7p-7a","people":["Afua Anning"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Srivastava"]},"Night Shift":{"time":"6p-6a","people":["Ahmed Adan"]}}}},"River District":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Dara Lundon"]}}}},"Virtual":{"IP Surgeon (Nights) - Virtual":{"floor":"","shifts":{"Night Shift":{"time":"6p-6a","people":["Heather Paddock","Nathan Bodette"]}}},"Ambulatory Virtual":{"floor":"","shifts":{"Day Shift":{"time":"8a-5p","people":["Sara Helvey","Daniel Carnegie"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tomi Kolade"]}}}},"23 Mile Road Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Wei Krupa"]}}}},"St. Clair Shores Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rohit Tonk"]}}}},"Henry Ford Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rahil Krishana"]}}}},"Madison Heights Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Naseem Rezenejad"]}}}},"26 Mile Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Rishi Sarna"]}}}}},"2026-06-12":{"St. John":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Linu Abraham","Vincent Akinola","Shivan Patel"]},"Night Shift":{"time":"6p-6a","people":["Rehan Batouta"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Cassie Parker","Atif Waseem","Ethan Yang"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Trevor Cook"]},"Night Shift":{"time":"7p-7a","people":["Sam Khozin","Davey Wright"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kasandra White"]},"Night Shift":{"time":"6p-6a","people":["Ngozi Egu"]}}}},"Southfield":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Madina Fawaz","Nikki Chopra"]},"Night Shift":{"time":"6p-6a","people":["Victor Akinola"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ikwo Bassey","Faiq Tariq"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Amit Goyal"]},"Night Shift":{"time":"7p-7a","people":["Issachar Devine","Mustafa Turkmani"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Eunice Owolade"]},"Night Shift":{"time":"6p-6a","people":["Eunice Yakubu"]}}}},"Novi":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ryan Ismail","Theresa Hahn"]},"Night Shift":{"time":"6p-6a","people":["Kevin Lye"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Kam Nazir","Susan Nicholas"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tariq Nakhooda"]},"Night Shift":{"time":"7p-7a","people":["Oyeniyi Oyibamiji"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Bhakta"]},"Night Shift":{"time":"6p-6a","people":["Deiufaite Lorient"]}}}},"Warren":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Laura Bultman","Nelson Ambe"]},"Night Shift":{"time":"6p-6a","people":["Muyiwa Alade"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Ali Jouni","Jide Adewumi"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Jason Lowe"]},"Night Shift":{"time":"7p-7a","people":["Dunni Osofisan"]}}}},"Rochester":{"IP Provider/Hospitalist":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Saman Barznji","Bashar Hammad"]},"Night Shift":{"time":"6p-6a","people":["Omer Shah"]}}},"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Daphne Kontos","Allyson Stone"]}}},"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Greg Cohan"]},"Night Shift":{"time":"7p-7a","people":["Afua Anning"]}}},"OB Provider":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Anjali Srivastava"]},"Night Shift":{"time":"6p-6a","people":["Ahmed Adan"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Khaled Hawatmeh"]}}}},"River District":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Dara Lundon"]}}}},"Virtual":{"IP Surgeon (Nights) - Virtual":{"floor":"","shifts":{"Night Shift":{"time":"6p-6a","people":["Heather Paddock","Nathan Bodette"]}}},"Ambulatory Virtual":{"floor":"","shifts":{"Day Shift":{"time":"8a-5p","people":["Sara Helvey","Daniel Carnegie"]}}},"Cardiology Virtual or IP":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Tomi Kolade"]}}}},"23 Mile Road Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Wei Krupa"]}}}},"St. Clair Shores Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rohit Tonk"]}}}},"Henry Ford Surgery Center":{"IP Surgeon (Days only)":{"floor":"","shifts":{"Day Shift":{"time":"6a-6p","people":["Rahil Krishana"]}}}},"Madison Heights Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"7a-7p","people":["Naseem Rezenejad"]}}}},"26 Mile Urgent Care":{"ED Hospital Provider":{"floor":"","shifts":{"Day Shift":{"time":"10a-10p","people":["Rishi Sarna"]}}}}}};
+var PHONES={"Anjali Srivastava":"240-205-5997","Nathan Bodette":"651-895-3023","Atif Waseem":"770-714-4758","Ngozi Egu":"713-927-6577","Amit Goyal":"612-747-5136","Jason Lowe":"510-459-3642","Eunice Yakubu":"404-509-0606","Mustafa Turkmani":"630-347-2628","Muyiwa Alade":"202-631-8383","Omer Shah":"631-922-4982","Allyson Stone":"802-296-1718","Issachar Devine":"267-432-0258","Dara Lundon":"646-542-1715","Heather Paddock":"919-406-4296","Daniel Carnegie":"202-557-8529","Ryan Ismail":"510-473-5606","Victor Akinola":"713-561-2854","Dunni Osofisan":"917-495-2713","Kasandra White":"916-287-3772","Sam Khozin":"614-565-7026","Tariq Nakhooda":"214-799-4199","Nelson Ambe":"763-670-3477","Rohit Tonk":"6097212121","Ali Jouni":"313-633-5393","Sara Helvey":"913-544-3870","Greg Cohan":"617.480.5881","Saman Barznji":"248-525-3377","Linu Abraham":"706-631-8450","Kevin Lye":"505-225-3802","Kam Nazir":"617-331-2873","Ikwo Bassey":"706-593-6794","Khaled Hawatmeh":"661-212-0000","Vincent Akinola":"317-332-5378","Rehan Batouta":"917-832-0207","Davey Wright":"678-755-6399","Madina Fawaz":"313-717-9845","Ahmed Adan":"614-260-7760","Faiq Tariq":"516 710 4443","Bashar Hammad":"504-372-8412","Rishi Sarna":"623-363-9953","Ethan Yang":"310-402-2886","Eunice Owolade":"646-371-3818","Anjali Bhakta":"919-671-9429","Rahil Krishana":"734-377-6949","Shivan Patel":"734-674-9874","Tomi Kolade":"347-608-7192","Daphne Kontos":"435-640-7700","Susan Nicholas":"404-414-5551","Theresa Hahn":"402-957-1441","Cassie Parker":"(262) 203-3622","Trevor Cook":"361-249-5359","Laura Bultman":"612-600-8434","Jide Adewumi":"706-372-0453"};
+var HOTELS={"Anjali Srivastava":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Atif Waseem":{"hotel":"Westin Southfield","city":"Southfield"},"Ngozi Egu":{"hotel":"Westin Southfield","city":"Southfield"},"Amit Goyal":{"hotel":"Westin Southfield","city":"Southfield"},"Jason Lowe":{"hotel":"Westin Southfield","city":"Southfield"},"Deiufaite Lorient":{"hotel":"Westin Southfield","city":"Southfield"},"Eunice Yakubu":{"hotel":"Westin Southfield","city":"Southfield"},"Muyiwa Alade":{"hotel":"Westin Southfield","city":"Southfield"},"Omer Shah":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Allyson Stone":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Issachar Devine":{"hotel":"Westin Southfield","city":"Southfield"},"Dara Lundon":{"hotel":"TownePlace Suites by Marriott Chesterfield","city":"Chesterfield"},"Daniel Carnegie":{"hotel":"Westin Southfield","city":"Southfield"},"Ryan Ismail":{"hotel":"Westin Southfield","city":"Southfield"},"Victor Akinola":{"hotel":"Westin Southfield","city":"Southfield"},"Dunni Osofisan":{"hotel":"Westin Southfield","city":"Southfield"},"Kasandra White":{"hotel":"Westin Southfield","city":"Southfield"},"Sam Khozin":{"hotel":"Westin Southfield","city":"Southfield"},"Tariq Nakhooda":{"hotel":"Westin Southfield","city":"Southfield"},"Nelson Ambe":{"hotel":"Westin Southfield","city":"Southfield"},"Rohit Tonk":{"hotel":"Westin Southfield","city":"Southfield"},"Greg Cohan":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Nikki Chopra":{"hotel":"Westin Southfield","city":"Southfield"},"Linu Abraham":{"hotel":"Westin Southfield","city":"Southfield"},"Kevin Lye":{"hotel":"Westin Southfield","city":"Southfield"},"Kam Nazir":{"hotel":"Westin Southfield","city":"Southfield"},"Ikwo Bassey":{"hotel":"Westin Southfield","city":"Southfield"},"Khaled Hawatmeh":{"hotel":"Westin Southfield","city":"Southfield"},"Vincent Akinola":{"hotel":"Westin Southfield","city":"Southfield"},"Rehan Batouta":{"hotel":"Westin Southfield","city":"Southfield"},"Oyeniyi Oyibamiji":{"hotel":"Westin Southfield","city":"Southfield"},"Davey Wright":{"hotel":"Westin Southfield","city":"Southfield"},"Wei Krupa":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Ahmed Adan":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Ethan Yang":{"hotel":"Westin Southfield","city":"Southfield"},"Eunice Owolade":{"hotel":"Westin Southfield","city":"Southfield"},"Anjali Bhakta":{"hotel":"Westin Southfield","city":"Southfield"},"Rahil Krishana":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Shivan Patel":{"hotel":"Westin Southfield","city":"Southfield"},"Jide Adewumi":{"hotel":"Westin Southfield","city":"Southfield"},"Daphne Kontos":{"hotel":"Fairfield Inn - Rochester Hills","city":"Rochester Hills"},"Susan Nicholas":{"hotel":"Westin Southfield","city":"Southfield"},"Theresa Hahn":{"hotel":"Westin Southfield","city":"Southfield"},"Cassie Parker":{"hotel":"Westin Southfield","city":"Southfield"},"Trevor Cook":{"hotel":"Westin Southfield","city":"Southfield"},"Laura Bultman":{"hotel":"Westin Southfield","city":"Southfield"}};
+
+var UNIT_ICONS={"IP Provider/Hospitalist":"\u{1FA7A}","IP Surgeon (Days only)":"\u{1F52A}","IP Surgeon (Nights) - Virtual":"\u{1F52A}","ED Hospital Provider":"\u{1F6A8}","OB Provider":"\u{1F476}","Ambulatory Virtual":"\u{1F4BB}","Cardiology Virtual or IP":"\u{2764}\u{FE0F}","Cardiology Onsite":"\u{2764}\u{FE0F}","Cardiology Virtual":"\u{2764}\u{FE0F}"};
+
+var DATES=Object.keys(D).sort();
+
+// Site ordering: 5 main hospitals first, then other onsite, Virtual last.
+var SITE_RANK={"St. John":0,"Southfield":1,"Novi":2,"Warren":3,"Rochester":4,"River District":5,"Virtual":90};
+function allSites(){
+  var set={};
+  for(var d in D){for(var s in D[d]){set[s]=1;}}
+  var arr=Object.keys(set);
+  arr.sort(function(a,b){
+    var ra=(a in SITE_RANK)?SITE_RANK[a]:50, rb=(b in SITE_RANK)?SITE_RANK[b]:50;
+    if(ra!==rb)return ra-rb;
+    return a.localeCompare(b);
+  });
+  return arr;
+}
+var SITES=allSites();
+
+function getDefaultDate(){
+  var today=new Date();
+  var ts=today.getFullYear()+"-"+("0"+(today.getMonth()+1)).slice(-2)+"-"+("0"+today.getDate()).slice(-2);
+  if(DATES.indexOf(ts)>=0)return ts;
+  var closest=DATES[0],minDiff=Infinity;
+  DATES.forEach(function(d){var diff=Math.abs(new Date(d+"T12:00:00")-today);if(diff<minDiff){minDiff=diff;closest=d;}});
+  return closest;
+}
+
+function sitesForDate(date){
+  var dd=D[date]||{};
+  return SITES.filter(function(s){return dd[s]&&Object.keys(dd[s]).length>0;});
+}
+
+var dDate=getDefaultDate();
+var dSites=sitesForDate(dDate);
+var state={date:dDate,site:(dSites[0]||SITES[0]),open:null,search:"",view:"location",shift:"all",modal:null,showSwap:false,filterStatus:null,filterOnShift:false};
+
+var SHEET_URL="";  // set this to your deployed Apps Script /exec URL to enable live sync
+var statuses={};
+var syncStatus="none";
+
+function stKey(date,site,unit,shift,person){return date+"||"+site+"||"+unit+"||"+shift+"||"+person;}
+function getSt(date,site,unit,shift,person){return statuses[stKey(date,site,unit,shift,person)]||null;}
+
+var managerName="";
+try{managerName=localStorage.getItem("hf_manager_name")||"";}catch(e){}
+function getManager(){
+  if(managerName)return managerName;
+  var name=prompt("Enter your name (this identifies who made changes):");
+  if(name&&name.trim()){managerName=name.trim();try{localStorage.setItem("hf_manager_name",managerName);}catch(e){}}
+  return managerName;
+}
+function changeManager(){
+  var name=prompt("Enter your name:",managerName);
+  if(name&&name.trim()){managerName=name.trim();try{localStorage.setItem("hf_manager_name",managerName);}catch(e){}render();}
+}
+
+function nowTime(){var d=new Date();var h=d.getHours(),m=d.getMinutes(),ap="a";if(h>=12){ap="p";if(h>12)h-=12;}if(h===0)h=12;return h+":"+("0"+m).slice(-2)+ap;}
+
+function setSt(date,site,unit,shift,person,st,replacedBy,note){
+  var k=stKey(date,site,unit,shift,person);
+  if(!st){delete statuses[k];if(SHEET_URL)pushStatus(date,site,unit,shift,person,"",replacedBy,note,"");return;}
+  var existing=statuses[k];
+  var checkins="";
+  if(st==="present"){
+    var ts=nowTime()+" ("+managerName+")";
+    if(existing&&existing.status==="present"&&existing.checkins&&String(existing.checkins).indexOf(":")>=0){checkins=existing.checkins+", "+ts;}
+    else{checkins=ts;}
+  }
+  statuses[k]={status:st,replacedBy:replacedBy||"",note:note||"",checkins:checkins};
+  if(SHEET_URL)pushStatus(date,site,unit,shift,person,st,replacedBy,note,checkins);
+}
+
+function getPhone(person){return PHONES[person]||null;}
+function getHotel(person){return HOTELS[person]||null;}
+
+function saveLocal(){try{localStorage.setItem("hf_statuses",JSON.stringify(statuses));}catch(e){}}
+function loadLocal(){try{var s=localStorage.getItem("hf_statuses");if(s){statuses=JSON.parse(s);}}catch(e){}}
+loadLocal();
+
+var jsonpId=0;
+function jsonp(url){
+  return new Promise(function(resolve,reject){
+    var cbName="__cb"+(jsonpId++);
+    var timeout=setTimeout(function(){cleanup();reject(new Error("timeout"));},10000);
+    function cleanup(){delete window[cbName];var s=document.getElementById(cbName);if(s)s.remove();clearTimeout(timeout);}
+    window[cbName]=function(data){cleanup();resolve(data);};
+    var s=document.createElement("script");s.id=cbName;
+    s.src=url+(url.indexOf("?")>=0?"&":"?")+"callback="+cbName;
+    s.onerror=function(){cleanup();reject(new Error("script error"));};
+    document.body.appendChild(s);
+  });
+}
+function pushStatus(date,site,unit,shift,person,st,replacedBy,note,checkins){
+  saveLocal();syncStatus="loading";render();
+  var url=SHEET_URL+"?action=set&date="+enc(date)+"&campus="+enc(site)+"&unit="+enc(unit)+"&shift="+enc(shift)+"&person="+enc(person)+"&status="+enc(st||"")+"&replacedBy="+enc(replacedBy||"")+"&note="+enc(note||"")+"&manager="+enc(managerName)+"&checkins="+enc(checkins||"");
+  jsonp(url).then(function(){syncStatus="ok";render();}).catch(function(){syncStatus="error";render();});
+}
+function pullStatuses(){
+  if(!SHEET_URL)return;
+  syncStatus="loading";render();
+  jsonp(SHEET_URL+"?action=get&t="+Date.now()).then(function(rows){
+    if(!Array.isArray(rows)){loadLocal();syncStatus="error";render();return;}
+    var fresh={};
+    rows.forEach(function(r){if(r.status){var k=stKey(r.date,r.campus,r.unit,r.shift,r.person);fresh[k]={status:r.status,replacedBy:r.replacedBy||"",note:r.note||"",checkins:r.checkins||""};}});
+    statuses=fresh;saveLocal();syncStatus="ok";render();
+  }).catch(function(){loadLocal();syncStatus="error";render();});
+}
+function enc(s){return encodeURIComponent(s||"");}
+if(SHEET_URL)setTimeout(pullStatuses,500);
+
+function h(n){return(n.charCodeAt(0)*37+(n.length>1?n.charCodeAt(1):0)*13)%360}
+function fmtDate(s){var d=new Date(s+"T12:00:00"),days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return days[d.getDay()]+", "+mo[d.getMonth()]+" "+d.getDate()}
+function shortD(s){var d=new Date(s+"T12:00:00");return{day:["S","M","T","W","T","F","S"][d.getDay()],num:d.getDate()}}
+function isD(s){return s.toLowerCase().indexOf("day")>=0}
+function initials(nm){return nm.charAt(0)+(nm.indexOf(" ")>=0?nm.split(" ").pop().charAt(0):"")}
+
+function openModal(date,site,unit,shift,person){state.modal={date:date,site:site,unit:unit,shift:shift,person:person,name:person};state.showSwap=false;render();}
+function closeModal(){state.modal=null;state.showSwap=false;render();}
+function closeFilter(){state.filterStatus=null;render();}
+function showFilter(st){state.filterStatus=st;render();}
+function showOnShift(){state.filterOnShift=true;render();}
+function closeOnShift(){state.filterOnShift=false;render();}
+
+function getAllOnShift(){
+  var results=[];var dd=D[state.date]||{};var sd2=dd[state.site]||{};
+  Object.keys(sd2).forEach(function(unit){var udata=sd2[unit];
+    Object.keys(udata.shifts||{}).forEach(function(sn){var sd=udata.shifts[sn];
+      sd.people.forEach(function(p){results.push({name:p,site:state.site,unit:unit,shift:sn,time:sd.time,person:p,phone:getPhone(p)});});
+    });
+  });
+  return results;
+}
+function setStatusModal(st){if(!state.modal)return;if(!getManager())return;var m=state.modal;setSt(m.date,m.site,m.unit,m.shift,m.person,st,"","");state.modal=null;state.showSwap=false;render();}
+function doSwap(permanent){
+  if(!state.modal)return;if(!getManager())return;var m=state.modal;
+  var inp=document.getElementById("swapName");var repName=(inp?inp.value:"").trim();
+  if(!repName){alert("Enter a replacement name");return;}
+  if(permanent){
+    var startIdx=DATES.indexOf(m.date);
+    if(startIdx>=0){for(var i=startIdx;i<DATES.length;i++){var dd=D[DATES[i]];if(dd&&dd[m.site]&&dd[m.site][m.unit]){var u=dd[m.site][m.unit];if(u.shifts&&u.shifts[m.shift]){if(u.shifts[m.shift].people.indexOf(m.person)>=0){setSt(DATES[i],m.site,m.unit,m.shift,m.person,"swapped",repName,"permanent");}}}}}
+  }else{setSt(m.date,m.site,m.unit,m.shift,m.person,"swapped",repName,"today");}
+  state.modal=null;state.showSwap=false;render();
+}
+function getFilteredPeople(statusFilter){
+  var results=[];var dd=D[state.date]||{};
+  Object.keys(dd).forEach(function(site){var sUnits=dd[site];
+    Object.keys(sUnits).forEach(function(unit){var udata=sUnits[unit];
+      Object.keys(udata.shifts||{}).forEach(function(sn){var sd=udata.shifts[sn];
+        sd.people.forEach(function(p){var rec=getSt(state.date,site,unit,sn,p);if(rec&&rec.status===statusFilter){results.push({name:p,site:site,unit:unit,shift:sn,time:sd.time,person:p,phone:getPhone(p),replacedBy:rec.replacedBy||""});}});
+      });
+    });
+  });
+  return results;
+}
+function makeBadge(st,rec){
+  if(!st)return "";
+  var label="";
+  if(st==="present"){var ci=rec&&rec.checkins?String(rec.checkins):"";if(ci&&ci.indexOf(":")>=0){var parts=ci.split(", ");label="Present "+parts[parts.length-1];}else{label="Present";}}
+  else if(st==="left"){label="Left Early";}else if(st==="swapped"){label="Swapped";}else if(st==="missing"){label="Missing";}else if(st==="removed"){label="Removed";}else{label=st.charAt(0).toUpperCase()+st.slice(1);}
+  return '<span class="status-badge '+st+'">'+label+'</span>';
+}
+function renderPerson(p,date,site,unitName,sn){
+  var nm=p;var phone=getPhone(p);var hotel=getHotel(p);var hue=h(nm);
+  var rec=getSt(date,site,unitName,sn,p);var st=rec?rec.status:null;var repBy=rec?rec.replacedBy:"";
+  var stClass=st?"st-"+st:"";var stBadge=makeBadge(st,rec);
+  var html='<div class="person-row '+stClass+'" onclick="openModal(\''+date+"','"+site.replace(/'/g,"\\'")+"','"+unitName.replace(/'/g,"\\'")+"','"+sn.replace(/'/g,"\\'")+"','"+p.replace(/'/g,"\\'")+'\')">'+
+    '<div class="person-avatar" style="background:hsl('+hue+',45%,35%)">'+initials(nm)+'</div>'+
+    '<div style="flex:1;min-width:0"><div class="person-name">'+nm+'</div>'+
+    (phone?'<div class="person-note phone-tag">\u{1F4F1} '+phone+'</div>':"")+
+    (hotel?'<div class="person-note hotel-tag">\u{1F3E8} '+hotel.hotel+(hotel.city?", "+hotel.city:"")+'</div>':"")+
+    (st==="swapped"&&repBy?'<div class="person-note swap-tag">Replaced by '+repBy+'</div>':"")+'</div>'+
+    stBadge+'</div>';
+  if(st==="swapped"&&repBy){var rh=h(repBy);html+='<div class="person-row replacement"><div class="person-avatar" style="background:hsl('+rh+',45%,35%)">'+initials(repBy)+'</div><div style="flex:1;min-width:0"><div class="person-name">'+repBy+'</div><div class="person-note rep-tag">Replacement for '+nm+'</div></div></div>';}
+  return html;
+}
+
+function render(){
+  var availSites=sitesForDate(state.date);
+  if(availSites.indexOf(state.site)<0&&availSites.length>0){state.site=availSites[0];}
+  var dd=D[state.date]||{};var cd=dd[state.site]||{};
+  var total=0;Object.keys(cd).forEach(function(un){var u=cd[un];Object.keys(u.shifts||{}).forEach(function(s){total+=u.shifts[s].people.length;});});
+  var units=Object.keys(cd).map(function(n){var u=cd[n];var fs=Object.keys(u.shifts||{}).filter(function(sn){return state.shift==="all"?true:state.shift==="day"?isD(sn):!isD(sn);}).map(function(sn){return[sn,u.shifts[sn]];});return{name:n,shifts:fs};}).filter(function(u){return u.shifts.length>0;});
+
+  var searchRes=[];
+  if(state.view==="search"&&state.search.length>=2){
+    var q=state.search.toLowerCase();
+    Object.keys(D).forEach(function(date){var sites=D[date];Object.keys(sites).forEach(function(site){var sUnits=sites[site];Object.keys(sUnits).forEach(function(unit){var udata=sUnits[unit];Object.keys(udata.shifts||{}).forEach(function(sn){var sd=udata.shifts[sn];sd.people.forEach(function(p){if(p.toLowerCase().indexOf(q)>=0){var rec=getSt(date,site,unit,sn,p);searchRes.push({name:p,date:date,site:site,unit:unit,shift:sn,time:sd.time,person:p,status:rec?rec.status:null,replacedBy:rec?rec.replacedBy:"",phone:getPhone(p),hotel:getHotel(p)});}});});});});});
+  }
+
+  var presentC=0,missingC=0,swappedC=0,leftC=0;
+  Object.keys(statuses).forEach(function(k){if(k.indexOf(state.date+"||")===0){var s=statuses[k].status;if(s==="present")presentC++;if(s==="missing")missingC++;if(s==="swapped")swappedC++;if(s==="left")leftC++;}});
+
+  var syncDot=syncStatus==="ok"?'<span class="sync-dot sync-ok"></span>':syncStatus==="error"?'<span class="sync-dot sync-err"></span>':syncStatus==="loading"?'<span class="sync-dot sync-load"></span>':"";
+  var syncLabel=SHEET_URL?(syncDot+'<span style="font-size:9px;color:#64748b">Live</span>'):'<span style="font-size:9px;color:#fbbf24">Offline</span>';
+  var managerLabel=managerName?'<span style="font-size:9px;color:#94a3b8;cursor:pointer" onclick="changeManager()">\u{1F464} '+managerName+'</span>':'<span style="font-size:9px;color:#fbbf24;cursor:pointer" onclick="getManager();render()">Tap to set name</span>';
+
+  var statusSummary="";
+  if(presentC||missingC||swappedC||leftC){
+    statusSummary='<div style="font-size:10px;text-align:right;line-height:1.6">';
+    if(presentC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'present\')" style="color:#22c55e">'+presentC+' here</span><br>';
+    if(missingC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'missing\')" style="color:#ef4444">'+missingC+' missing</span><br>';
+    if(leftC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'left\')" style="color:#fbbf24">'+leftC+' left early</span><br>';
+    if(swappedC) statusSummary+='<span class="stat-tap" onclick="showFilter(\'swapped\')" style="color:#a855f7">'+swappedC+' swapped</span>';
+    statusSummary+='</div>';
+  }
+
+  // Filter popup (grouped by site + day/night)
+  var filterHtml="";
+  if(state.filterStatus){
+    var fp=getFilteredPeople(state.filterStatus);
+    var labels={present:"Present",missing:"Missing / No Show",left:"Left Early",swapped:"Swapped"};
+    var colors={present:"#22c55e",missing:"#ef4444",left:"#fbbf24",swapped:"#a855f7"};
+    var groups={};
+    fp.forEach(function(r){var dn=isD(r.shift)?"Day":"Night";var key=r.site+"||"+dn;if(!groups[key])groups[key]={site:r.site,dn:dn,people:[]};groups[key].people.push(r);});
+    var gkeys=Object.keys(groups).sort(function(a,b){var sa=groups[a].site,sb=groups[b].site;var ra=(sa in SITE_RANK)?SITE_RANK[sa]:50,rb=(sb in SITE_RANK)?SITE_RANK[sb]:50;if(ra!==rb)return ra-rb;return a.localeCompare(b);});
+    filterHtml='<div class="filter-overlay" onclick="if(event.target===this)closeFilter()"><div class="filter-modal">'+
+      '<div class="filter-title" style="color:'+colors[state.filterStatus]+'">'+labels[state.filterStatus]+' ('+fp.length+')</div>'+
+      '<div class="filter-subtitle">'+fmtDate(state.date)+'</div>'+
+      (fp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one with this status</div>':"")+
+      gkeys.map(function(k){var g=groups[k];var dnColor=g.dn==="Day"?"#F26522":"#818cf8";
+        return '<div class="filter-section"><div class="filter-section-title"><span style="color:'+dnColor+'">'+g.site+' / '+g.dn+'</span> <span style="color:#64748b;font-weight:400">('+g.people.length+')</span></div>'+
+          g.people.map(function(r){var hue2=h(r.name);
+            return '<div class="filter-item" onclick="closeFilter();setState({site:\''+r.site.replace(/'/g,"\\'")+'\'});openModal(\''+state.date+"','"+r.site.replace(/'/g,"\\'")+"','"+r.unit.replace(/'/g,"\\'")+"','"+r.shift.replace(/'/g,"\\'")+"','"+r.person.replace(/'/g,"\\'")+'\')"><div class="person-avatar" style="background:hsl('+hue2+',45%,35%)">'+initials(r.name)+'</div><div style="flex:1;min-width:0"><div class="filter-item-name">'+r.name+'</div><div class="filter-item-loc">'+r.unit+'</div>'+(r.phone?'<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} '+r.phone+'</div>':"")+'</div></div>';
+          }).join("")+'</div>';
+      }).join("")+
+      '<button class="filter-close" onclick="closeFilter()">Close</button></div></div>';
+  }
+
+  // On-shift popup
+  var onShiftHtml="";
+  if(state.filterOnShift){
+    var osp=getAllOnShift();var osG={};
+    osp.forEach(function(r){var dn=isD(r.shift)?"Day Shift":"Night Shift";if(!osG[dn])osG[dn]=[];osG[dn].push(r);});
+    onShiftHtml='<div class="filter-overlay" onclick="if(event.target===this)closeOnShift()"><div class="filter-modal">'+
+      '<div class="filter-title" style="color:#F26522">On Shift ('+osp.length+')</div><div class="filter-subtitle">'+fmtDate(state.date)+' / '+state.site+'</div>'+
+      (osp.length===0?'<div style="padding:20px;text-align:center;color:#64748b">No one on shift</div>':"")+
+      ["Day Shift","Night Shift"].filter(function(dn){return osG[dn];}).map(function(dn){var dnColor=dn==="Day Shift"?"#F26522":"#818cf8";var ppl=osG[dn];
+        return '<div class="filter-section"><div class="filter-section-title"><span style="color:'+dnColor+'">'+dn+'</span> <span style="color:#64748b;font-weight:400">('+ppl.length+')</span></div>'+
+          ppl.map(function(r){var hue2=h(r.name);var rec2=getSt(state.date,r.site,r.unit,r.shift,r.person);var st2=rec2?rec2.status:null;var badge2=makeBadge(st2,rec2);
+            return '<div class="filter-item" onclick="closeOnShift();openModal(\''+state.date+"','"+r.site.replace(/'/g,"\\'")+"','"+r.unit.replace(/'/g,"\\'")+"','"+r.shift.replace(/'/g,"\\'")+"','"+r.person.replace(/'/g,"\\'")+'\')"><div class="person-avatar" style="background:hsl('+hue2+',45%,35%)">'+initials(r.name)+'</div><div style="flex:1;min-width:0"><div class="filter-item-name">'+r.name+'</div><div class="filter-item-loc">'+r.unit+'</div>'+(r.phone?'<div style="font-size:10px;color:#0EA5E9">\u{1F4F1} '+r.phone+'</div>':"")+'</div>'+badge2+'</div>';
+          }).join("")+'</div>';
+      }).join("")+
+      '<button class="filter-close" onclick="closeOnShift()">Close</button></div></div>';
+  }
+
+  // Modal
+  var modalHtml="";
+  if(state.modal){
+    var m=state.modal;var rec=getSt(m.date,m.site,m.unit,m.shift,m.person);var curSt=rec?rec.status:null;
+    var phone=getPhone(m.person);var hotel=getHotel(m.person);
+    var chips="";
+    if(phone)chips+='<a class="modal-phone" href="tel:'+phone.replace(/[^0-9+]/g,'')+'">\u{1F4F1} '+phone+'</a>';
+    if(hotel)chips+='<span class="modal-hotel">\u{1F3E8} '+hotel.hotel+(hotel.city?", "+hotel.city:"")+'</span>';
+    if(!phone&&!hotel)chips='<div style="font-size:12px;color:#475569">No phone or hotel on file</div>';
+    var checkinInfo="";
+    if(curSt==="present"&&rec&&rec.checkins&&String(rec.checkins).indexOf(":")>=0){checkinInfo='<div style="font-size:11px;color:#94a3b8;padding:0 12px;margin-top:-4px;margin-bottom:4px">Checked in: '+rec.checkins+'</div>';}
+    modalHtml='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal">'+
+      '<div class="modal-name">'+m.name+'</div><div class="modal-info">'+m.site+' / '+m.unit+' / '+m.shift+' / '+fmtDate(m.date)+'</div>'+
+      '<div class="modal-chips">'+chips+'</div>'+
+      '<div class="modal-btns">'+
+        '<button class="modal-btn'+(curSt==="present"?" sel":"")+'" onclick="setStatusModal(\'present\')"><span class="dot" style="background:#22c55e"></span> '+(curSt==="present"&&rec&&rec.checkins?"Check In Again":"Present")+'</button>'+checkinInfo+
+        '<button class="modal-btn'+(curSt==="missing"?" sel":"")+'" onclick="setStatusModal(\'missing\')"><span class="dot" style="background:#ef4444"></span> Missing / No Show</button>'+
+        '<button class="modal-btn'+(curSt==="left"?" sel":"")+'" onclick="setStatusModal(\'left\')"><span class="dot" style="background:#fbbf24"></span> Left Early</button>'+
+        '<button class="modal-btn'+(curSt==="removed"?" sel":"")+'" onclick="setStatusModal(\'removed\')"><span class="dot" style="background:#64748b"></span> Removed</button>'+
+        '<button class="modal-btn'+(curSt==="swapped"?" sel":"")+'" onclick="state.showSwap=!state.showSwap;render()"><span class="dot" style="background:#a855f7"></span> Swap / Replace</button>'+
+        (state.showSwap?'<div class="swap-form"><label>Who is replacing '+m.name+'?</label><input id="swapName" placeholder="Enter replacement name" value="'+(rec&&rec.replacedBy?rec.replacedBy:"")+'" /><div class="swap-btns"><button onclick="doSwap(false)">Today Only</button><button class="swap-perm" onclick="doSwap(true)">Rest of Project</button></div></div>':"")+
+        '<button class="modal-btn" onclick="setStatusModal(null)"><span class="dot" style="background:#334155;border:1px solid #475569"></span> Clear Status</button>'+
+      '</div><button class="modal-cancel" onclick="closeModal()">Cancel</button></div></div>';
+  }
+
+  var mainHtml='<div class="header"><div class="header-row"><div><div class="brand-sub">ReMedi \u2022 Henry Ford Go-Live</div><div class="brand-title">Provider Tracker</div><div style="margin-top:2px">'+syncLabel+(SHEET_URL?' <span style="font-size:9px;color:#475569;cursor:pointer" onclick="pullStatuses()">refresh</span>':"")+'</div><div style="margin-top:1px">'+managerLabel+'</div></div>'+
+    '<div style="display:flex;gap:8px;align-items:center">'+statusSummary+'<div class="stat-box" onclick="showOnShift()"><div class="stat-num">'+total+'</div><div class="stat-label">On Shift</div></div></div></div></div>'+
+    '<div class="date-scroll">'+DATES.map(function(d){var s=shortD(d);return '<button class="date-btn'+(d===state.date?" active":"")+'" onclick="setState({date:\''+d+'\'})"><div class="day">'+s.day+'</div><div class="num">'+s.num+'</div></button>';}).join("")+'</div>'+
+    '<div class="site-scroll">'+availSites.map(function(s){return '<button class="site-btn'+(s===state.site?" active":"")+'" onclick="setState({site:\''+s.replace(/'/g,"\\'")+'\'})">'+s+'</button>';}).join("")+'</div>'+
+    '<div class="controls-row"><div class="toggle-group"><button class="toggle-btn'+(state.view==="location"?" active":"")+'" onclick="setState({view:\'location\'})">Location</button><button class="toggle-btn'+(state.view==="search"?" active":"")+'" onclick="setState({view:\'search\'})">Search</button></div>'+
+    '<div class="toggle-group shift-group"><button class="toggle-btn'+(state.shift==="all"?" active":"")+'" onclick="setState({shift:\'all\'})">All</button><button class="toggle-btn'+(state.shift==="day"?" active":"")+'" onclick="setState({shift:\'day\'})">Day</button><button class="toggle-btn'+(state.shift==="night"?" active":"")+'" onclick="setState({shift:\'night\'})">Night</button></div></div>';
+
+  if(state.view==="location"){
+    mainHtml+='<div class="content"><div class="content-label">'+fmtDate(state.date)+' / '+state.site+' / '+units.length+' units</div>';
+    if(units.length===0){mainHtml+='<div class="empty-state"><div class="empty-icon">\u{1F4CB}</div><div class="empty-title">No assignments</div></div>';}
+    else{
+      mainHtml+='<div class="unit-list">';
+      units.forEach(function(u){var isOpen=state.open===u.name;var pc=u.shifts.reduce(function(a,e){return a+e[1].people.length;},0);
+        mainHtml+='<div class="unit-card'+(isOpen?" open":"")+'"><button class="unit-header" onclick="setState({open:state.open===\''+u.name.replace(/'/g,"\\'")+'\' ? null : \''+u.name.replace(/'/g,"\\'")+'\'})"><span class="unit-icon">'+(UNIT_ICONS[u.name]||"\u{1F3E5}")+'</span><div class="unit-info"><div class="unit-name">'+u.name+'</div><div class="unit-meta">'+pc+' staff</div></div><span class="unit-arrow">\u{203A}</span></button>';
+        if(isOpen){mainHtml+='<div class="unit-body">';u.shifts.forEach(function(e){var sn=e[0],sd=e[1];var isDy=isD(sn);mainHtml+='<div class="shift-section"><div class="shift-header"><span class="shift-label '+(isDy?"day":"night")+'">'+(isDy?"DAY":"NIGHT")+'</span><span class="shift-time">'+sd.time+' ('+sd.people.length+')</span></div>';sd.people.forEach(function(p){mainHtml+=renderPerson(p,state.date,state.site,u.name,sn);});mainHtml+='</div>';});mainHtml+='</div>';}
+        mainHtml+='</div>';
+      });
+      mainHtml+='</div>';
+    }
+    mainHtml+='</div>';
+  }else{
+    mainHtml+='<div class="content"><div class="search-wrap"><span class="search-icon">\u{1F50D}</span><input class="search-input" placeholder="Search by name..." value="'+state.search+'" oninput="setState({search:this.value})" autofocus></div>';
+    if(state.search.length<2){mainHtml+='<div class="empty-state"><div class="empty-icon">\u{1F50D}</div><div class="empty-title">Type at least 2 characters</div></div>';}
+    else{
+      mainHtml+='<div class="content-label">'+searchRes.length+' results</div>';
+      searchRes.slice(0,60).forEach(function(r){var stBadge2=r.status?'<span class="status-badge '+r.status+'" style="margin-top:4px;display:inline-block">'+(r.status==="left"?"Left Early":r.status==="swapped"?"Swapped":r.status.charAt(0).toUpperCase()+r.status.slice(1))+'</span>':"";
+        mainHtml+='<div class="result-card" onclick="openModal(\''+r.date+"','"+r.site.replace(/'/g,"\\'")+"','"+r.unit.replace(/'/g,"\\'")+"','"+r.shift.replace(/'/g,"\\'")+"','"+r.person.replace(/'/g,"\\'")+'\')"><div class="result-top"><div class="result-name">'+r.name+'</div><div class="result-date">'+fmtDate(r.date)+'</div></div><div class="result-unit">'+r.site+' / '+r.unit+' / '+r.shift+'</div><div class="result-campus">'+(r.phone?'<span style="color:#0EA5E9;font-size:10px">\u{1F4F1} '+r.phone+'</span> ':"")+(r.hotel?'<span style="font-size:10px">\u{1F3E8} '+r.hotel.hotel+(r.hotel.city?", "+r.hotel.city:"")+'</span>':"")+" "+stBadge2+'</div></div>';
+      });
+    }
+    mainHtml+='</div>';
+  }
+
+  document.getElementById("app").innerHTML=mainHtml+onShiftHtml+filterHtml+modalHtml;
+  if(state.view==="search"){var i=document.querySelector(".search-input");if(i&&document.activeElement!==i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}
+}
+function setState(p){for(var k in p){state[k]=p[k];}render();}
+render();
+if(SHEET_URL)setInterval(function(){pullStatuses();},30000);
+</script>
+</body>
+</html>
