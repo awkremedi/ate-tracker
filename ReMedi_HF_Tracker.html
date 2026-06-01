@@ -176,7 +176,7 @@ var dDate=getDefaultDate();
 var dSites=sitesForDate(dDate);
 var state={date:dDate,site:(dSites[0]||SITES[0]),open:null,search:"",view:"location",shift:"all",modal:null,showSwap:false,filterStatus:null,filterOnShift:false};
 
-var SHEET_URL="";  // set this to your deployed Apps Script /exec URL to enable live sync
+var SHEET_URL="https://script.google.com/macros/s/AKfycbwLElMIrXPBo6pz4r1bKz00tOsDAVl0Lsg_gmqdDc6dIIEAgFDU2zfaSN1_ucJAanhu/exec";
 var statuses={};
 var syncStatus="none";
 
@@ -185,15 +185,19 @@ function getSt(date,site,unit,shift,person){return statuses[stKey(date,site,unit
 
 var managerName="";
 try{managerName=localStorage.getItem("hf_manager_name")||"";}catch(e){}
+function logManager(name){
+  if(!SHEET_URL||!name)return;
+  jsonp(SHEET_URL+"?action=logmanager&manager="+enc(name)+"&t="+Date.now()).catch(function(){});
+}
 function getManager(){
   if(managerName)return managerName;
   var name=prompt("Enter your name (this identifies who made changes):");
-  if(name&&name.trim()){managerName=name.trim();try{localStorage.setItem("hf_manager_name",managerName);}catch(e){}}
+  if(name&&name.trim()){managerName=name.trim();try{localStorage.setItem("hf_manager_name",managerName);}catch(e){}logManager(managerName);}
   return managerName;
 }
 function changeManager(){
   var name=prompt("Enter your name:",managerName);
-  if(name&&name.trim()){managerName=name.trim();try{localStorage.setItem("hf_manager_name",managerName);}catch(e){}render();}
+  if(name&&name.trim()){managerName=name.trim();try{localStorage.setItem("hf_manager_name",managerName);}catch(e){}logManager(managerName);render();}
 }
 
 function nowTime(){var d=new Date();var h=d.getHours(),m=d.getMinutes(),ap="a";if(h>=12){ap="p";if(h>12)h-=12;}if(h===0)h=12;return h+":"+("0"+m).slice(-2)+ap;}
@@ -446,6 +450,8 @@ function render(){
   if(state.view==="search"){var i=document.querySelector(".search-input");if(i&&document.activeElement!==i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}
 }
 function setState(p){for(var k in p){state[k]=p[k];}render();}
+// Force name entry as soon as the app opens.
+if(!managerName){getManager();}
 render();
 if(SHEET_URL)setInterval(function(){pullStatuses();},30000);
 </script>
